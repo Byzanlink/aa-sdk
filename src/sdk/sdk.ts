@@ -33,13 +33,15 @@ export class PrimeSdk {
   private chainId: number;
   private factoryUsed: Factory;
   private index: number;
+  private apiKey: string;
+  private policyId: string;
 
   private userOpsBatch: BatchUserOpsRequest = { to: [], data: [], value: [] };
 
   constructor(walletProvider: WalletProviderLike, optionsLike: SdkOptions) {
 
     let walletConnectProvider;
-    if (isWalletConnectProvider(walletProvider)) {
+        if (isWalletConnectProvider(walletProvider)) {
       walletConnectProvider = new WalletConnect2WalletProvider(walletProvider as EthereumProvider);
     } else if (!isWalletProvider(walletProvider)) {
       throw new Exception('Invalid wallet provider');
@@ -50,10 +52,14 @@ export class PrimeSdk {
       chainId,
       rpcProviderUrl,
       accountAddress,
+      apiKey,
+      policyId,
     } = optionsLike;
 
     this.chainId = chainId;
     this.index = index ?? 0;
+    this.apiKey = apiKey;
+    this.policyId = policyId;
 
     if (!optionsLike.bundlerProvider) {
       optionsLike.bundlerProvider = new EtherspotBundler(chainId);
@@ -177,7 +183,7 @@ export class PrimeSdk {
     }
 
     if (paymasterDetails?.url) {
-      const paymasterAPI = new VerifyingPaymasterAPI(paymasterDetails.url, this.etherspotWallet.entryPointAddress, paymasterDetails.context ?? {})
+      const paymasterAPI = new VerifyingPaymasterAPI(paymasterDetails.url, this.etherspotWallet.entryPointAddress, paymasterDetails.context ?? {}, this.chainId,this.apiKey,this.policyId)
       this.etherspotWallet.setPaymasterApi(paymasterAPI)
     } else this.etherspotWallet.setPaymasterApi(null);
 

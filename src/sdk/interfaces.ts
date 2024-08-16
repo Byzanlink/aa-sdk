@@ -22,4 +22,6 @@ export interface SdkOptions {
   entryPointAddress?: string;
   accountAddress?: string;
   index?: number;
+  apiKey?: string;
+  policyId?: string;
 }

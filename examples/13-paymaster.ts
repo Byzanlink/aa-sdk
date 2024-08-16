@@ -8,14 +8,16 @@ dotenv.config();
 
 const recipient = '0x80a1874E1046B1cc5deFdf4D3153838B72fF94Ac'; // recipient wallet address
 const value = '0.01'; // transfer value
-const apiKey = 'arka_public_key'; // Only testnets are available, if you need further assistance in setting up a paymaster service for your dapp, please reach out to us on discord or https://etherspot.fyi/arka/intro
+const apiKey = '0aa572f7-39fe-492f-bca4-ba3d1a63720d'; // Only testnets are available, if you need further assistance in setting up a paymaster service for your dapp, please reach out to us on discord or https://etherspot.fyi/arka/intro
 const bundlerApiKey = 'eyJvcmciOiI2NTIzZjY5MzUwOTBmNzAwMDFiYjJkZWIiLCJpZCI6IjMxMDZiOGY2NTRhZTRhZTM4MGVjYjJiN2Q2NDMzMjM4IiwiaCI6Im11cm11cjEyOCJ9';
-
+const policyId = 'e59ccc68-64f4-4181-8905-9ce8d9369973';
 async function main() {
   // initializating sdk...
   const primeSdk = new PrimeSdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, {
     chainId: Number(process.env.CHAIN_ID),
-    bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), bundlerApiKey)
+    bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), bundlerApiKey),
+    apiKey: apiKey,
+    policyId: policyId
   })
 
   console.log('address: ', primeSdk.state.EOAAddress)
@@ -38,7 +40,7 @@ async function main() {
 
   // estimate transactions added to the batch and get the fee data for the UserOp
   const op = await primeSdk.estimate({
-    paymasterDetails: { url: `https://arka.etherspot.io?apiKey=${apiKey}&chainId=${Number(process.env.CHAIN_ID)}`, context: { mode: 'sponsor' } }
+    paymasterDetails: { url: `https://dev.byzanlink.com/paymasterservice/paymasterdata`, context: { mode: 'sponsor' } }
   });
   console.log(`Estimate UserOp: ${await printOp(op)}`);
 

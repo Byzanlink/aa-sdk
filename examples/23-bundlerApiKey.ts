@@ -5,7 +5,7 @@ dotenv.config();
 
 
 async function main() {
-  const etherspotBundlerApiKey = 'eyJvcmciOiI2NTIzZjY5MzUwOTBmNzAwMDFiYjJkZWIiLCJpZCI6IjMxMDZiOGY2NTRhZTRhZTM4MGVjYjJiN2Q2NDMzMjM4IiwiaCI6Im11cm11cjEyOCJ9';
+  const etherspotBundlerApiKey = '09b9e55e-a8cb-47a9-8aed-52aea21c0842';
   // initializating sdk...
   const primeSdk = new PrimeSdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, {
     chainId: Number(process.env.CHAIN_ID),

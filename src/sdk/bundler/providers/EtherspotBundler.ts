@@ -14,8 +14,8 @@ export class EtherspotBundler implements BundlerProvider {
       bundlerUrl = networkConfig.bundler;
     }
     if (apiKey) {
-      if (bundlerUrl.includes('?api-key=')) this.url = bundlerUrl + apiKey;
-      else this.url = bundlerUrl + '?api-key=' + apiKey;
+      if (bundlerUrl.includes('?apiKey=')) this.url = bundlerUrl + apiKey;
+      else this.url = bundlerUrl + '?apiKey=' + apiKey;
     }
     else this.url = bundlerUrl;
     this.apiKey = apiKey;

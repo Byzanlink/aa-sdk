@@ -1,6 +1,6 @@
 {
-  "name": "@etherspot/prime-sdk",
-  "version": "1.8.1",
+  "name": "@byzanlink/aa-sdk",
+  "version": "1.0.0",
   "description": "Etherspot Prime (Account Abstraction) SDK",
   "keywords": [
     "ether",
@@ -10,10 +10,11 @@
     "blockchain",
     "account abstraction",
     "4337",
-    "etherspot"
+    "byzanlink"
   ],
   "license": "MIT",
-  "homepage": "https://etherspot.dev",
+  "private": false,
+  "homepage": "https://byzanlink.com",
   "main": "./dist/node.js",
   "browser": {
     "./dist/browser.js": "./dist/browser.js",
@@ -24,6 +25,7 @@
     "start": "exit 1",
     "01-get-address": "./node_modules/.bin/ts-node ./examples/01-get-address",
     "02-transfer-funds": "./node_modules/.bin/ts-node ./examples/02-transfer-funds",
+    "02-transfer-funds-receipt": "./node_modules/.bin/ts-node ./examples/02-transfer-funds-receipt",
     "03-transfer-erc20": "./node_modules/.bin/ts-node ./examples/03-transfer-erc20",
     "05-get-account-balances": "./node_modules/.bin/ts-node ./examples/05-get-account-balances",
     "06-transaction": "./node_modules/.bin/ts-node ./examples/06-transaction",
@@ -69,6 +71,9 @@
     "@lifi/sdk": "2.5.0",
     "@thehubbleproject/bls": "0.5.1",
     "@walletconnect/universal-provider": "2.10.0",
+    "@web3auth/base": "^8.12.2",
+    "@web3auth/ethereum-provider": "^8.12.3",
+    "@web3auth/node-sdk": "^3.3.0",
     "apollo-link-ws": "1.0.20",
     "buffer": "^6.0.3",
     "class-transformer": "0.5.1",
@@ -93,7 +98,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "npm": "9.6.4",
-    "ts-node": "10.9.1",
+    "ts-node": "^10.9.1",
     "typedoc": "^0.17.8",
     "typescript": "4.9.5"
   }
