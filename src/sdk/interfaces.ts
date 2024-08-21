@@ -24,4 +24,5 @@ export interface SdkOptions {
   index?: number;
   apiKey?: string;
   policyId?: string;
+  whiteListUser?:boolean;
 }

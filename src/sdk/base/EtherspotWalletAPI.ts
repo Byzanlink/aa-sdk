@@ -84,7 +84,7 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
       ]),
     ]);
   }
-
+  
   async getCounterFactualAddress(): Promise<string> {
     if (this.predefinedAccountAddress) {
       await this.checkAccountAddress(this.predefinedAccountAddress);
@@ -97,6 +97,10 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
       );
     }
     return this.accountAddress;
+  }
+
+  async getInitCode(): Promise<string> {
+    return this.provider.getCode(this.accountAddress);
   }
 
   async getNonce(key = 0): Promise<BigNumber> {

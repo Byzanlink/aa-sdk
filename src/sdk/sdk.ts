@@ -20,6 +20,7 @@ import { ZeroDevWalletAPI } from './base/ZeroDevWalletAPI';
 import { SimpleAccountAPI } from './base/SimpleAccountWalletAPI';
 import { ErrorHandler } from './errorHandler/errorHandler.service';
 import { EtherspotBundler } from './bundler';
+import { ByzanlinkPaymaster } from './paymaster';
 
 /**
  * Prime-Sdk
@@ -35,6 +36,8 @@ export class PrimeSdk {
   private index: number;
   private apiKey: string;
   private policyId: string;
+  private whiteListUser:boolean;
+  private paymasterUrl: string;
 
   private userOpsBatch: BatchUserOpsRequest = { to: [], data: [], value: [] };
 
@@ -54,13 +57,15 @@ export class PrimeSdk {
       accountAddress,
       apiKey,
       policyId,
+      whiteListUser
     } = optionsLike;
 
     this.chainId = chainId;
     this.index = index ?? 0;
     this.apiKey = apiKey;
     this.policyId = policyId;
-
+    this.whiteListUser=whiteListUser;
+    this.paymasterUrl = process.env.PAYMASTER_URL;
     if (!optionsLike.bundlerProvider) {
       optionsLike.bundlerProvider = new EtherspotBundler(chainId);
     }
@@ -159,8 +164,25 @@ export class PrimeSdk {
   }
 
   async getCounterFactualAddress(): Promise<string> {
-    return this.etherspotWallet.getCounterFactualAddress();
+    if(this.whiteListUser){
+      const address: string = await this.etherspotWallet.getCounterFactualAddress();
+      if(this.policyId && this.paymasterUrl){
+       const initCode =  await this.etherspotWallet.getInitCode();
+       if(initCode.length <= 2){
+        const byzanlinkPaymaster = new ByzanlinkPaymaster(Number(process.env.CHAIN_ID), this.apiKey, this.paymasterUrl, this.policyId);
+       try{ 
+        let whitelisetdAddress = await byzanlinkPaymaster.addWhitelist([address]);
+        console.log(whitelisetdAddress.msg)
+       }catch(e){
+         console.log("Error in whitelisting the address")
+       }
+      }
+    }
+      return address;
+    
   }
+    return this.etherspotWallet.getCounterFactualAddress();
+}
 
   async estimate(params: {
     paymasterDetails?: PaymasterApi,
