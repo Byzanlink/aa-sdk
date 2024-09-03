@@ -22,6 +22,7 @@ export class HttpRpcClient {
         name: 'Connected bundler network',
         chainId,
       });
+      console.log('initializing')
       this.initializing = this.validateChainId();
     } catch (err) {
       if (err.message.includes('failed response'))
@@ -35,6 +36,7 @@ export class HttpRpcClient {
   async validateChainId(): Promise<void> {
     try {
       // validate chainId is in sync with expected chainid
+      console.log('in validate chain id')
       const chain = await this.userOpJsonRpcProvider.send('eth_chainId', []);
       const bundlerChain = parseInt(chain);
       if (bundlerChain !== this.chainId) {
@@ -54,6 +56,8 @@ export class HttpRpcClient {
   async getVerificationGasInfo(tx: UserOperationStruct): Promise<any> {
     const hexifiedUserOp = deepHexlify(await resolveProperties(tx));
     try {
+      console.log('eth_estimateUserOperationGas')
+      console.log(hexifiedUserOp)
       const response = await this.userOpJsonRpcProvider.send('eth_estimateUserOperationGas', [hexifiedUserOp, this.entryPointAddress]);
       return response;
     } catch (err) {
@@ -75,6 +79,7 @@ export class HttpRpcClient {
       await this.initializing;
       const hexifiedUserOp = deepHexlify(await resolveProperties(userOp1));
       const jsonRequestData: [UserOperationStruct, string] = [hexifiedUserOp, this.entryPointAddress];
+      console.log('eth_sendUserOperation')
       await this.printUserOperation('eth_sendUserOperation', jsonRequestData);
       return await this.userOpJsonRpcProvider.send('eth_sendUserOperation', [hexifiedUserOp, this.entryPointAddress]);
     } catch (err) {
@@ -89,6 +94,7 @@ export class HttpRpcClient {
   async sendAggregatedOpsToBundler(userOps1: UserOperationStruct[]): Promise<string> {
     try {
       const hexifiedUserOps = await Promise.all(userOps1.map(async (userOp1) => await resolveProperties(userOp1)));
+      console.log('eth_sendAggregatedUserOperation')
       return await this.userOpJsonRpcProvider.send('eth_sendAggregatedUserOperation', [
         hexifiedUserOps,
         this.entryPointAddress,
@@ -126,6 +132,7 @@ export class HttpRpcClient {
 
   async getUserOpsReceipt(uoHash: string): Promise<any> {
     try {
+      console.log('eth_getUserOperationReceipt')
       const response = await this.userOpJsonRpcProvider.send('eth_getUserOperationReceipt', [uoHash]);
       return response;
     } catch (err) {

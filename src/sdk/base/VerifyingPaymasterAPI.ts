@@ -58,6 +58,7 @@ export class VerifyingPaymasterAPI extends PaymasterAPI {
     op.preVerificationGas = calcPreVerificationGas(op);
 
     // Ask the paymaster to sign the transaction and return a valid paymasterAndData value.
+    console.log(this.paymasterUrl)
     const paymasterAndData = await fetch(this.paymasterUrl, {
       method: 'POST',
       headers: {
@@ -70,13 +71,14 @@ export class VerifyingPaymasterAPI extends PaymasterAPI {
       body: JSON.stringify({ params: [await toJSON(op), this.entryPoint, this.context,this.chainId], jsonrpc: '2', id: 2 }),
     })
       .then(async (res) => {
-        const response = await await res.json();
+        const response = await  res.json();
         if (response.error) {
           throw new Error(response.error);
         }
         return response
       })
       .catch((err) => {
+        console.log(err)
         throw new Error(err.message);
       })
 

@@ -2,7 +2,7 @@ import { DataUtils } from '../src';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const dataApiKey = 'eyJvcmciOiI2NTIzZjY5MzUwOTBmNzAwMDFiYjJkZWIiLCJpZCI6IjI4ZWJiMGQ5YTMxYjQ3MmY4NmU4MWY2YTVhYzBhMzE1IiwiaCI6Im11cm11cjEyOCJ9';
+const dataApiKey = '09b9e55e-a8cb-47a9-8aed-52aea21c0842';
 
 async function main(): Promise<void> {
   // initializating Data service...

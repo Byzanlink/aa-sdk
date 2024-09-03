@@ -1,9 +1,9 @@
 import { BigNumber, BigNumberish, Contract } from 'ethers';
 import {
-  EtherspotWallet,
-  EtherspotWallet__factory,
-  EtherspotWalletFactory,
-  EtherspotWalletFactory__factory,
+  ByzanlinkWallet,
+  ByzanlinkWallet__factory,
+  ByzanlinkWalletFactory,
+  ByzanlinkWalletFactory__factory,
 } from '../contracts';
 import { arrayify, hexConcat } from 'ethers/lib/utils';
 import { BaseApiParams, BaseAccountAPI } from './BaseAccountAPI';
@@ -14,20 +14,20 @@ import { BaseApiParams, BaseAccountAPI } from './BaseAccountAPI';
  * @param factoryAddress address of contract "factory" to deploy new contracts (not needed if account already deployed)
  * @param index nonce value used when creating multiple accounts for the same owner
  */
-export interface EtherspotWalletApiParams extends BaseApiParams {
+export interface ByzanlinkWalletApiParams extends BaseApiParams {
   factoryAddress?: string;
   index?: number;
   predefinedAccountAddress?: string;
 }
 
 /**
- * An implementation of the BaseAccountAPI using the EtherspotWallet contract.
+ * An implementation of the BaseAccountAPI using the ByzanlinkWallet contract.
  * - contract deployer gets "entrypoint", "owner" addresses and "index" nonce
  * - owner signs requests using normal "Ethereum Signed Message" (ether's signer.signMessage())
  * - nonce method is "nonce()"
  * - execute method is "execFromEntryPoint()"
  */
-export class EtherspotWalletAPI extends BaseAccountAPI {
+export class ByzanlinkWalletAPI extends BaseAccountAPI {
   factoryAddress?: string;
   index: number;
   accountAddress?: string;
@@ -37,19 +37,20 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
    * our account contract.
    * should support the "execFromEntryPoint" and "nonce" methods
    */
-  accountContract?: EtherspotWallet;
+  accountContract?: ByzanlinkWallet;
 
-  factory?: EtherspotWalletFactory;
+  factory?: ByzanlinkWalletFactory;
 
-  constructor(params: EtherspotWalletApiParams) {
+  constructor(params: ByzanlinkWalletApiParams) {
     super(params);
     this.factoryAddress = params.factoryAddress;
     this.index = params.index ?? 0;
     this.predefinedAccountAddress = params.predefinedAccountAddress ?? null;
+    console.log('In constructor ether')
   }
 
   async checkAccountAddress(address: string): Promise<void> {
-    const accountContract = EtherspotWallet__factory.connect(address, this.provider);
+    const accountContract = ByzanlinkWallet__factory.connect(address, this.provider);
     if (!(await accountContract.isOwner(this.services.walletService.EOAAddress))) {
       throw new Error('the specified accountAddress does not belong to the given EOA provider')
     }
@@ -58,9 +59,9 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
     }
   }
 
-  async _getAccountContract(): Promise<EtherspotWallet | Contract> {
+  async _getAccountContract(): Promise<ByzanlinkWallet | Contract> {
     if (this.accountContract == null) {
-      this.accountContract = EtherspotWallet__factory.connect(await this.getAccountAddress(), this.provider);
+      this.accountContract = ByzanlinkWallet__factory.connect(await this.getAccountAddress(), this.provider);
     }
     return this.accountContract;
   }
@@ -71,7 +72,8 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
    */
   async getAccountInitCode(): Promise<string> {
     if (this.factoryAddress != null && this.factoryAddress !== '') {
-      this.factory = EtherspotWalletFactory__factory.connect(this.factoryAddress, this.provider);
+      console.log('In getAccountInitCode ether')
+      this.factory = ByzanlinkWalletFactory__factory.connect(this.factoryAddress, this.provider);
     } else {
       throw new Error('no factory to get initCode');
     }
@@ -89,8 +91,12 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
     if (this.predefinedAccountAddress) {
       await this.checkAccountAddress(this.predefinedAccountAddress);
     }
+    console.log('In getCounterFactualAddress ether:', this.accountAddress)
+
     if (!this.accountAddress) {
-      this.factory = EtherspotWalletFactory__factory.connect(this.factoryAddress, this.provider);
+      console.log("Index:", this.services.walletService.EOAAddress, " ",this.index);
+
+      this.factory = ByzanlinkWalletFactory__factory.connect(this.factoryAddress, this.provider);
       this.accountAddress = await this.factory.getAddress(
         this.services.walletService.EOAAddress,
         this.index,
@@ -99,11 +105,12 @@ export class EtherspotWalletAPI extends BaseAccountAPI {
     return this.accountAddress;
   }
 
-  async getInitCode(): Promise<string> {
-    return this.provider.getCode(this.accountAddress);
-  }
+  // async getInitCode(): Promise<string> {
+  //   return this.provider.getCode(this.accountAddress);
+  // }
 
   async getNonce(key = 0): Promise<BigNumber> {
+    console.log("IN NONCE",await this.checkAccountPhantom())
     if (await this.checkAccountPhantom()) {
       return BigNumber.from(0);
     }

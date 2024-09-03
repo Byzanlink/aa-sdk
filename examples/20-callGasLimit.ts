@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { EtherspotBundler, PrimeSdk } from '../src';
+import { ByzanlinkBundler, ByzanlinkAASdk } from '../src';
 import { printOp } from '../src/sdk/common/OperationUtils';
 import * as dotenv from 'dotenv';
 import { sleep } from '../src/sdk/common';
@@ -12,36 +12,36 @@ const bundlerApiKey = 'eyJvcmciOiI2NTIzZjY5MzUwOTBmNzAwMDFiYjJkZWIiLCJpZCI6IjMxM
 
 async function main() {
   // initializating sdk...
-  const primeSdk = new PrimeSdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, {
+  const byzanlinkAASdk = new ByzanlinkAASdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, {
     chainId: Number(process.env.CHAIN_ID),
-    bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), bundlerApiKey)
+    bundlerProvider: new ByzanlinkBundler(Number(process.env.CHAIN_ID), bundlerApiKey)
   })
 
-  console.log('address: ', primeSdk.state.EOAAddress)
+  console.log('address: ', byzanlinkAASdk.state.EOAAddress)
 
   // get address of EtherspotWallet...
-  const address: string = await primeSdk.getCounterFactualAddress();
+  const address: string = await byzanlinkAASdk.getCounterFactualAddress();
   console.log('\x1b[33m%s\x1b[0m', `EtherspotWallet address: ${address}`);
 
   // clear the transaction batch
-  await primeSdk.clearUserOpsFromBatch();
+  await byzanlinkAASdk.clearUserOpsFromBatch();
 
   // add transactions to the batch
-  const transactionBatch = await primeSdk.addUserOpsToBatch({to: recipient, value: ethers.utils.parseEther(value)});
+  const transactionBatch = await byzanlinkAASdk.addUserOpsToBatch({to: recipient, value: ethers.utils.parseEther(value)});
   console.log('transactions: ', transactionBatch);
 
   // get balance of the account address
-  const balance = await primeSdk.getNativeBalance();
+  const balance = await byzanlinkAASdk.getNativeBalance();
 
   console.log('balances: ', balance);
 
   // estimate transactions added to the batch and get the fee data for the UserOp
   // passing callGasLimit as 40000 to manually set it
-  const op = await primeSdk.estimate({ callGasLimit: 4000 });
+  const op = await byzanlinkAASdk.estimate({ callGasLimit: 4000 });
   console.log(`Estimate UserOp: ${await printOp(op)}`);
 
   // sign the UserOp and sending to the bundler...
-  const uoHash = await primeSdk.send(op);
+  const uoHash = await byzanlinkAASdk.send(op);
   console.log(`UserOpHash: ${uoHash}`);
 
   // get transaction hash...
@@ -50,7 +50,7 @@ async function main() {
   const timeout = Date.now() + 60000; // 1 minute timeout
   while((userOpsReceipt == null) && (Date.now() < timeout)) {
     await sleep(2);
-    userOpsReceipt = await primeSdk.getUserOpReceipt(uoHash);
+    userOpsReceipt = await byzanlinkAASdk.getUserOpReceipt(uoHash);
   }
   console.log('\x1b[33m%s\x1b[0m', `Transaction Receipt: `, userOpsReceipt);
 }

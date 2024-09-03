@@ -28,47 +28,7 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
-export type UserOperationStruct = {
-  sender: PromiseOrValue<string>;
-  nonce: PromiseOrValue<BigNumberish>;
-  initCode: PromiseOrValue<BytesLike>;
-  callData: PromiseOrValue<BytesLike>;
-  callGasLimit: PromiseOrValue<BigNumberish>;
-  verificationGasLimit: PromiseOrValue<BigNumberish>;
-  preVerificationGas: PromiseOrValue<BigNumberish>;
-  maxFeePerGas: PromiseOrValue<BigNumberish>;
-  maxPriorityFeePerGas: PromiseOrValue<BigNumberish>;
-  paymasterAndData: PromiseOrValue<BytesLike>;
-  signature: PromiseOrValue<BytesLike>;
-};
-
-export type UserOperationStructOutput = [
-  string,
-  BigNumber,
-  string,
-  string,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  string,
-  string
-] & {
-  sender: string;
-  nonce: BigNumber;
-  initCode: string;
-  callData: string;
-  callGasLimit: BigNumber;
-  verificationGasLimit: BigNumber;
-  preVerificationGas: BigNumber;
-  maxFeePerGas: BigNumber;
-  maxPriorityFeePerGas: BigNumber;
-  paymasterAndData: string;
-  signature: string;
-};
-
-export interface EtherspotWalletInterface extends utils.Interface {
+export interface IByzanlinkWalletInterface extends utils.Interface {
   functions: {
     "addDeposit()": FunctionFragment;
     "addGuardian(address)": FunctionFragment;
@@ -79,29 +39,14 @@ export interface EtherspotWalletInterface extends utils.Interface {
     "execute(address,uint256,bytes)": FunctionFragment;
     "executeBatch(address[],uint256[],bytes[])": FunctionFragment;
     "getDeposit()": FunctionFragment;
-    "getNonce()": FunctionFragment;
     "getProposal(uint256)": FunctionFragment;
     "guardianCosign()": FunctionFragment;
-    "guardianCount()": FunctionFragment;
     "guardianPropose(address)": FunctionFragment;
-    "initialize(address)": FunctionFragment;
     "isGuardian(address)": FunctionFragment;
     "isOwner(address)": FunctionFragment;
     "isValidSignature(bytes32,bytes)": FunctionFragment;
-    "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
-    "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
-    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
-    "ownerCount()": FunctionFragment;
-    "proposalId()": FunctionFragment;
-    "proposalTimelock()": FunctionFragment;
-    "proxiableUUID()": FunctionFragment;
     "removeGuardian(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
-    "tokensReceived(address,address,address,uint256,bytes,bytes)": FunctionFragment;
-    "upgradeTo(address)": FunctionFragment;
-    "upgradeToAndCall(address,bytes)": FunctionFragment;
-    "validateUserOp((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes),bytes32,uint256)": FunctionFragment;
     "withdrawDepositTo(address,uint256)": FunctionFragment;
   };
 
@@ -116,29 +61,14 @@ export interface EtherspotWalletInterface extends utils.Interface {
       | "execute"
       | "executeBatch"
       | "getDeposit"
-      | "getNonce"
       | "getProposal"
       | "guardianCosign"
-      | "guardianCount"
       | "guardianPropose"
-      | "initialize"
       | "isGuardian"
       | "isOwner"
       | "isValidSignature"
-      | "onERC1155BatchReceived"
-      | "onERC1155Received"
-      | "onERC721Received"
-      | "ownerCount"
-      | "proposalId"
-      | "proposalTimelock"
-      | "proxiableUUID"
       | "removeGuardian"
       | "removeOwner"
-      | "supportsInterface"
-      | "tokensReceived"
-      | "upgradeTo"
-      | "upgradeToAndCall"
-      | "validateUserOp"
       | "withdrawDepositTo"
   ): FunctionFragment;
 
@@ -186,7 +116,6 @@ export interface EtherspotWalletInterface extends utils.Interface {
     functionFragment: "getDeposit",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "getNonce", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getProposal",
     values: [PromiseOrValue<BigNumberish>]
@@ -196,15 +125,7 @@ export interface EtherspotWalletInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "guardianCount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "guardianPropose",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "initialize",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -220,88 +141,12 @@ export interface EtherspotWalletInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "onERC1155BatchReceived",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "onERC1155Received",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "onERC721Received",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ownerCount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "proposalId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "proposalTimelock",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "proxiableUUID",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "removeGuardian",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "removeOwner",
     values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokensReceived",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "upgradeTo",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "upgradeToAndCall",
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "validateUserOp",
-    values: [
-      UserOperationStruct,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawDepositTo",
@@ -329,7 +174,6 @@ export interface EtherspotWalletInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getDeposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getProposal",
     data: BytesLike
@@ -339,40 +183,13 @@ export interface EtherspotWalletInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "guardianCount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "guardianPropose",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isGuardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isOwner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isValidSignature",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC1155BatchReceived",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC1155Received",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC721Received",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "ownerCount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "proposalId", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "proposalTimelock",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "proxiableUUID",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -384,104 +201,58 @@ export interface EtherspotWalletInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokensReceived",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "upgradeTo", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "upgradeToAndCall",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "validateUserOp",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "withdrawDepositTo",
     data: BytesLike
   ): Result;
 
   events: {
-    "AdminChanged(address,address)": EventFragment;
-    "BeaconUpgraded(address)": EventFragment;
-    "EtherspotWalletInitialized(address,address)": EventFragment;
-    "EtherspotWalletReceived(address,uint256)": EventFragment;
+    "ByzanlinkWalletInitialized(address,address)": EventFragment;
+    "ByzanlinkWalletReceived(address,uint256)": EventFragment;
     "GuardianAdded(address)": EventFragment;
     "GuardianRemoved(address)": EventFragment;
-    "Initialized(uint8)": EventFragment;
     "OwnerAdded(address)": EventFragment;
     "OwnerRemoved(address)": EventFragment;
     "ProposalDiscarded(uint256,address)": EventFragment;
     "ProposalSubmitted(uint256,address,address)": EventFragment;
     "ProposalTimelockChanged(uint256)": EventFragment;
     "QuorumNotReached(uint256,address,uint256)": EventFragment;
-    "Upgraded(address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AdminChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "BeaconUpgraded"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "EtherspotWalletInitialized"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "EtherspotWalletReceived"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ByzanlinkWalletInitialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ByzanlinkWalletReceived"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "GuardianAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "GuardianRemoved"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnerAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnerRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalDiscarded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalSubmitted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalTimelockChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "QuorumNotReached"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Upgraded"): EventFragment;
 }
 
-export interface AdminChangedEventObject {
-  previousAdmin: string;
-  newAdmin: string;
-}
-export type AdminChangedEvent = TypedEvent<
-  [string, string],
-  AdminChangedEventObject
->;
-
-export type AdminChangedEventFilter = TypedEventFilter<AdminChangedEvent>;
-
-export interface BeaconUpgradedEventObject {
-  beacon: string;
-}
-export type BeaconUpgradedEvent = TypedEvent<
-  [string],
-  BeaconUpgradedEventObject
->;
-
-export type BeaconUpgradedEventFilter = TypedEventFilter<BeaconUpgradedEvent>;
-
-export interface EtherspotWalletInitializedEventObject {
+export interface ByzanlinkWalletInitializedEventObject {
   entryPoint: string;
   owner: string;
 }
-export type EtherspotWalletInitializedEvent = TypedEvent<
+export type ByzanlinkWalletInitializedEvent = TypedEvent<
   [string, string],
-  EtherspotWalletInitializedEventObject
+  ByzanlinkWalletInitializedEventObject
 >;
 
-export type EtherspotWalletInitializedEventFilter =
-  TypedEventFilter<EtherspotWalletInitializedEvent>;
+export type ByzanlinkWalletInitializedEventFilter =
+  TypedEventFilter<ByzanlinkWalletInitializedEvent>;
 
-export interface EtherspotWalletReceivedEventObject {
+export interface ByzanlinkWalletReceivedEventObject {
   from: string;
   amount: BigNumber;
 }
-export type EtherspotWalletReceivedEvent = TypedEvent<
+export type ByzanlinkWalletReceivedEvent = TypedEvent<
   [string, BigNumber],
-  EtherspotWalletReceivedEventObject
+  ByzanlinkWalletReceivedEventObject
 >;
 
-export type EtherspotWalletReceivedEventFilter =
-  TypedEventFilter<EtherspotWalletReceivedEvent>;
+export type ByzanlinkWalletReceivedEventFilter =
+  TypedEventFilter<ByzanlinkWalletReceivedEvent>;
 
 export interface GuardianAddedEventObject {
   newGuardian: string;
@@ -499,13 +270,6 @@ export type GuardianRemovedEvent = TypedEvent<
 >;
 
 export type GuardianRemovedEventFilter = TypedEventFilter<GuardianRemovedEvent>;
-
-export interface InitializedEventObject {
-  version: number;
-}
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
-
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OwnerAddedEventObject {
   newOwner: string;
@@ -570,19 +334,12 @@ export type QuorumNotReachedEvent = TypedEvent<
 export type QuorumNotReachedEventFilter =
   TypedEventFilter<QuorumNotReachedEvent>;
 
-export interface UpgradedEventObject {
-  implementation: string;
-}
-export type UpgradedEvent = TypedEvent<[string], UpgradedEventObject>;
-
-export type UpgradedEventFilter = TypedEventFilter<UpgradedEvent>;
-
-export interface EtherspotWallet extends BaseContract {
+export interface IByzanlinkWallet extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: EtherspotWalletInterface;
+  interface: IByzanlinkWalletInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -645,8 +402,6 @@ export interface EtherspotWallet extends BaseContract {
 
     getDeposit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getNonce(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     getProposal(
       _proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -664,15 +419,8 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    guardianCount(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     guardianPropose(
       _newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    initialize(
-      anOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -690,41 +438,7 @@ export interface EtherspotWallet extends BaseContract {
       hash: PromiseOrValue<BytesLike>,
       signature: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    ownerCount(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    proposalId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    proposalTimelock(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<[string]>;
+    ): Promise<[string] & { magicValue: string }>;
 
     removeGuardian(
       _guardian: PromiseOrValue<string>,
@@ -733,39 +447,6 @@ export interface EtherspotWallet extends BaseContract {
 
     removeOwner(
       _owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    tokensReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<string>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      arg5: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    validateUserOp(
-      userOp: UserOperationStruct,
-      userOpHash: PromiseOrValue<BytesLike>,
-      missingAccountFunds: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -817,8 +498,6 @@ export interface EtherspotWallet extends BaseContract {
 
   getDeposit(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getNonce(overrides?: CallOverrides): Promise<BigNumber>;
-
   getProposal(
     _proposalId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -836,15 +515,8 @@ export interface EtherspotWallet extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  guardianCount(overrides?: CallOverrides): Promise<BigNumber>;
-
   guardianPropose(
     _newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initialize(
-    anOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -864,40 +536,6 @@ export interface EtherspotWallet extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  onERC1155BatchReceived(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>[],
-    arg3: PromiseOrValue<BigNumberish>[],
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  onERC1155Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  onERC721Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  ownerCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  proposalId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  proposalTimelock(overrides?: CallOverrides): Promise<BigNumber>;
-
-  proxiableUUID(overrides?: CallOverrides): Promise<string>;
-
   removeGuardian(
     _guardian: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -905,39 +543,6 @@ export interface EtherspotWallet extends BaseContract {
 
   removeOwner(
     _owner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  supportsInterface(
-    interfaceId: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  tokensReceived(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<string>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<BytesLike>,
-    arg5: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  upgradeTo(
-    newImplementation: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  upgradeToAndCall(
-    newImplementation: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  validateUserOp(
-    userOp: UserOperationStruct,
-    userOpHash: PromiseOrValue<BytesLike>,
-    missingAccountFunds: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -985,8 +590,6 @@ export interface EtherspotWallet extends BaseContract {
 
     getDeposit(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getNonce(overrides?: CallOverrides): Promise<BigNumber>;
-
     getProposal(
       _proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1002,15 +605,8 @@ export interface EtherspotWallet extends BaseContract {
 
     guardianCosign(overrides?: CallOverrides): Promise<void>;
 
-    guardianCount(overrides?: CallOverrides): Promise<BigNumber>;
-
     guardianPropose(
       _newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    initialize(
-      anOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1030,40 +626,6 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ownerCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proposalId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proposalTimelock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<string>;
-
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1074,39 +636,6 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    tokensReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<string>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      arg5: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    validateUserOp(
-      userOp: UserOperationStruct,
-      userOpHash: PromiseOrValue<BytesLike>,
-      missingAccountFunds: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     withdrawDepositTo(
       withdrawAddress: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -1115,39 +644,23 @@ export interface EtherspotWallet extends BaseContract {
   };
 
   filters: {
-    "AdminChanged(address,address)"(
-      previousAdmin?: null,
-      newAdmin?: null
-    ): AdminChangedEventFilter;
-    AdminChanged(
-      previousAdmin?: null,
-      newAdmin?: null
-    ): AdminChangedEventFilter;
-
-    "BeaconUpgraded(address)"(
-      beacon?: PromiseOrValue<string> | null
-    ): BeaconUpgradedEventFilter;
-    BeaconUpgraded(
-      beacon?: PromiseOrValue<string> | null
-    ): BeaconUpgradedEventFilter;
-
-    "EtherspotWalletInitialized(address,address)"(
+    "ByzanlinkWalletInitialized(address,address)"(
       entryPoint?: PromiseOrValue<string> | null,
       owner?: PromiseOrValue<string> | null
-    ): EtherspotWalletInitializedEventFilter;
-    EtherspotWalletInitialized(
+    ): ByzanlinkWalletInitializedEventFilter;
+    ByzanlinkWalletInitialized(
       entryPoint?: PromiseOrValue<string> | null,
       owner?: PromiseOrValue<string> | null
-    ): EtherspotWalletInitializedEventFilter;
+    ): ByzanlinkWalletInitializedEventFilter;
 
-    "EtherspotWalletReceived(address,uint256)"(
+    "ByzanlinkWalletReceived(address,uint256)"(
       from?: PromiseOrValue<string> | null,
       amount?: PromiseOrValue<BigNumberish> | null
-    ): EtherspotWalletReceivedEventFilter;
-    EtherspotWalletReceived(
+    ): ByzanlinkWalletReceivedEventFilter;
+    ByzanlinkWalletReceived(
       from?: PromiseOrValue<string> | null,
       amount?: PromiseOrValue<BigNumberish> | null
-    ): EtherspotWalletReceivedEventFilter;
+    ): ByzanlinkWalletReceivedEventFilter;
 
     "GuardianAdded(address)"(newGuardian?: null): GuardianAddedEventFilter;
     GuardianAdded(newGuardian?: null): GuardianAddedEventFilter;
@@ -1156,9 +669,6 @@ export interface EtherspotWallet extends BaseContract {
       removedGuardian?: null
     ): GuardianRemovedEventFilter;
     GuardianRemoved(removedGuardian?: null): GuardianRemovedEventFilter;
-
-    "Initialized(uint8)"(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
 
     "OwnerAdded(address)"(newOwner?: null): OwnerAddedEventFilter;
     OwnerAdded(newOwner?: null): OwnerAddedEventFilter;
@@ -1203,13 +713,6 @@ export interface EtherspotWallet extends BaseContract {
       newOwnerProposed?: null,
       approvalCount?: null
     ): QuorumNotReachedEventFilter;
-
-    "Upgraded(address)"(
-      implementation?: PromiseOrValue<string> | null
-    ): UpgradedEventFilter;
-    Upgraded(
-      implementation?: PromiseOrValue<string> | null
-    ): UpgradedEventFilter;
   };
 
   estimateGas: {
@@ -1254,8 +757,6 @@ export interface EtherspotWallet extends BaseContract {
 
     getDeposit(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getNonce(overrides?: CallOverrides): Promise<BigNumber>;
-
     getProposal(
       _proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1265,15 +766,8 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    guardianCount(overrides?: CallOverrides): Promise<BigNumber>;
-
     guardianPropose(
       _newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initialize(
-      anOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1293,40 +787,6 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ownerCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proposalId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proposalTimelock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
-
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1334,39 +794,6 @@ export interface EtherspotWallet extends BaseContract {
 
     removeOwner(
       _owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokensReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<string>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      arg5: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    validateUserOp(
-      userOp: UserOperationStruct,
-      userOpHash: PromiseOrValue<BytesLike>,
-      missingAccountFunds: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1419,8 +846,6 @@ export interface EtherspotWallet extends BaseContract {
 
     getDeposit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getNonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getProposal(
       _proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1430,15 +855,8 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    guardianCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     guardianPropose(
       _newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      anOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1458,40 +876,6 @@ export interface EtherspotWallet extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ownerCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    proposalId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    proposalTimelock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1499,39 +883,6 @@ export interface EtherspotWallet extends BaseContract {
 
     removeOwner(
       _owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokensReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<string>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      arg5: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    validateUserOp(
-      userOp: UserOperationStruct,
-      userOpHash: PromiseOrValue<BytesLike>,
-      missingAccountFunds: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

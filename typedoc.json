@@ -11,7 +11,7 @@
       "**/*+(index|.spec|.e2e).ts"
     ],
     "theme": "./.github-pages/theme",
-    "name": "Etherspot Prime reference docs",
+    "name": "Byzanlink reference docs",
     "hideGenerator": true,
     "disableSources": true,
     "excludePrivate": true,

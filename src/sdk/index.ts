@@ -1,6 +1,6 @@
 import { DataUtils } from './dataUtils';
-import { PrimeSdk } from './sdk';
-import { ArkaPaymaster, ByzanlinkPaymaster } from './paymaster';
+import { ByzanlinkAASdk } from './sdk';
+import {  ByzanlinkPaymaster } from './paymaster';
 
 export * from './api';
 export * from './dto';
@@ -10,5 +10,5 @@ export * from './state';
 export * from './wallet';
 export * from './bundler';
 
-export { PrimeSdk, DataUtils, ArkaPaymaster,ByzanlinkPaymaster };
-export default PrimeSdk;
+export { ByzanlinkAASdk, DataUtils,ByzanlinkPaymaster };
+export default ByzanlinkAASdk;

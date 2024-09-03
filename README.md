@@ -13,7 +13,7 @@
 --------------
 
 
-## 🐞 Byzanlink AA
+## Byzanlink AA
 
 Byzanlink AA is a fully open source SDK which let's dapp developers easily get building with Account Abstraction.
 
@@ -30,13 +30,10 @@ npm i @byzanlink/aa-sdk
 
 To Get the project key, register to [https://dev.byzanlink.com/]
 
-**Note: It is necessary to include the `projectKey` parameter in the PrimeSdk.**
+**Note: It is necessary to include the `projectKey` parameter in the ByzanlinkAASdk.**
 
 ## 📖 Documentation
 
-## 🏌️‍♂️ Contributions
-
-Please feel free to open issues or PRs to this repo.
 
 ## 🔐 Security
 

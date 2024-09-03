@@ -1,7 +1,7 @@
 {
   "name": "@byzanlink/aa-sdk",
-  "version": "1.0.0",
-  "description": "Etherspot Prime (Account Abstraction) SDK",
+  "version": "1.0.3",
+  "description": "Byzanlink (Account Abstraction) SDK",
   "keywords": [
     "ether",
     "ethereum",
@@ -10,7 +10,8 @@
     "blockchain",
     "account abstraction",
     "4337",
-    "byzanlink"
+    "byzanlink",
+    "aa"
   ],
   "license": "MIT",
   "private": false,
@@ -45,6 +46,7 @@
     "21-get-multiple-accounts": "./node_modules/.bin/ts-node ./examples/21-get-multiple-accounts",
     "22-concurrent-userops": "./node_modules/.bin/ts-node ./examples/22-concurrent-userops",
     "25-get-quotes": "./node_modules/.bin/ts-node ./examples/25-get-quotes",
+    "24-ByzanlinkPaymaster":"./node_modules/.bin/ts-node ./examples/24-ByzanlinkPaymaster",
     "format": "prettier --write \"{src,test,examples}/**/*.ts\"",
     "lint": "eslint \"{src,test,examples}/**/*.ts\"",
     "lint-fix": "npm run lint -- --fix",
@@ -61,19 +63,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/etherspot/etherspot-prime-sdk.git"
+    "url": "git+https://github.com/Byzanlink/aa-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/etherspot/etherspot-prime-sdk/issues"
+    "url": "https://github.com/Byzanlink/aa-sdk/issues"
   },
   "dependencies": {
     "@apollo/client": "3.8.7",
     "@lifi/sdk": "2.5.0",
     "@thehubbleproject/bls": "0.5.1",
     "@walletconnect/universal-provider": "2.10.0",
-    "@web3auth/base": "^8.12.2",
-    "@web3auth/ethereum-provider": "^8.12.3",
-    "@web3auth/node-sdk": "^3.3.0",
     "apollo-link-ws": "1.0.20",
     "buffer": "^6.0.3",
     "class-transformer": "0.5.1",

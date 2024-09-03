@@ -88,9 +88,7 @@ export const Networks: {
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
-        etherspot: '0x7f6d8F107fE8551160BD5351d5F1514A6aD5d40E',
-        zeroDev: '0x5de4839a76cf55d0c90e2061ef4386d962E15ae3',
-        simpleAccount: '0x9406Cc6185a346906296840746125a0E44976454',
+        byzanlink: '0x7f6d8F107fE8551160BD5351d5F1514A6aD5d40E'
       }
     },
   },
@@ -100,9 +98,7 @@ export const Networks: {
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
-        etherspot: '0xBAf0d462bc4E6fb4e092e5a19DEc471c7B394fB6',
-        zeroDev: '',
-        simpleAccount: '0xBAf0d462bc4E6fb4e092e5a19DEc471c7B394fB6',
+        byzanlink: '0xBAf0d462bc4E6fb4e092e5a19DEc471c7B394fB6'
       }
     }
   }
@@ -310,8 +306,6 @@ export const Safe: ISafeConstant = {
   },
 };
 
-export const KERNEL_IMPL_ADDRESS = "0xf048AD83CB2dfd6037A43902a2A5Be04e53cd2Eb";
-export const KERNEL_VALIDATOR_ADDRESS = "0xd9AB5096a832b9ce79914329DAEE236f8Eea0390";
 
 export const CHAIN_ID_TO_NETWORK_NAME: { [key: number]: NetworkNames } = Object.entries(
   NETWORK_NAME_TO_CHAIN_ID,

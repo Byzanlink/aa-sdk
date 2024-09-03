@@ -2,7 +2,7 @@ import { Exception } from "../../common";
 import { getNetworkConfig } from "../../network/constants";
 import { BundlerProvider } from "../interface";
 
-export class EtherspotBundler implements BundlerProvider {
+export class ByzanlinkBundler implements BundlerProvider {
   readonly url: string;
   readonly apiKey: string;
   readonly chainId: string;
