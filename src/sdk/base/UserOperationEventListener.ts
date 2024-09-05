@@ -2,9 +2,9 @@ import { BigNumberish, Event } from 'ethers'
 import { TransactionReceipt } from '@ethersproject/providers'
 import { EntryPoint } from '../contracts'
 import { defaultAbiCoder } from 'ethers/lib/utils'
-import Debug from 'debug'
+//import Debug from 'debug'
 
-const debug = Debug('aa.listener')
+//const debug = Debug('aa.listener')
 
 const DEFAULT_TRANSACTION_TIMEOUT = 10000
 
@@ -69,7 +69,7 @@ export class UserOperationEventListener {
 
     const transactionReceipt = await event.getTransactionReceipt()
     transactionReceipt.transactionHash = this.userOpHash
-    debug('got event with status=', event.args.success, 'gasUsed=', transactionReceipt.gasUsed)
+    //debug('got event with status=', event.args.success, 'gasUsed=', transactionReceipt.gasUsed)
 
     // before returning the receipt, update the status from the event.
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -82,7 +82,7 @@ export class UserOperationEventListener {
   }
 
   async extractFailureReason (receipt: TransactionReceipt): Promise<void> {
-    debug('mark tx as failed')
+   // debug('mark tx as failed')
     receipt.status = 0
     const revertReasonEvents = await this.entryPoint.queryFilter(this.entryPoint.filters.UserOperationRevertReason(this.userOpHash, this.sender), receipt.blockHash)
     if (revertReasonEvents[0] != null) {
@@ -91,7 +91,7 @@ export class UserOperationEventListener {
         // Error(string)
         message = defaultAbiCoder.decode(['string'], '0x' + message.substring(10)).toString()
       }
-      debug(`rejecting with reason: ${message}`)
+      //debug(`rejecting with reason: ${message}`)
       this.reject(new Error(`UserOp failed with reason: ${message}`)
       )
     }

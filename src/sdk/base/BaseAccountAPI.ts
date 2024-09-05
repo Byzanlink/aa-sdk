@@ -295,6 +295,21 @@ export abstract class BaseAccountAPI {
     throw new Error('must handle revert');
   }
 
+
+  /**
+   * Get the paymaster balance for the given address
+   * @param address
+   */
+  async getPaymasterBalance(address: string): Promise<BigNumber> {
+    try {
+      console.log('In paymaster balance ether')
+    return await this.entryPointView.callStatic.balanceOf(address);
+    } catch (e: any) {
+      return e.errorArgs.balance;
+    }
+  }
+   
+
   /**
    * return initCode value to into the UserOp.
    * (either deployment code, or empty hex if contract already deployed)

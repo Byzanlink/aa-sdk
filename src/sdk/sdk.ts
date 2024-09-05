@@ -34,7 +34,6 @@ export class ByzanlinkAASdk {
   private index: number;
   private apiKey: string;
   private policyId: string;
-  private paymasterUrl: string;
 
   private userOpsBatch: BatchUserOpsRequest = { to: [], data: [], value: [] };
 
@@ -60,9 +59,8 @@ export class ByzanlinkAASdk {
     this.index = index ?? 0;
     this.apiKey = apiKey;
     this.policyId = policyId;
-    this.paymasterUrl = process.env.PAYMASTER_URL;
     if (!optionsLike.bundlerProvider) {
-      optionsLike.bundlerProvider = new ByzanlinkBundler(chainId);
+      optionsLike.bundlerProvider = new ByzanlinkBundler(chainId,apiKey,rpcProviderUrl);
     }
 
     this.factoryUsed = optionsLike.factoryWallet ?? Factory.BYZANLINK;
@@ -141,6 +139,10 @@ export class ByzanlinkAASdk {
 
   async getCounterFactualAddress(): Promise<string> {
     return this.byzanlinkWallet.getCounterFactualAddress();
+  }
+
+  async getPaymasterBalance(address: string): Promise<BigNumber> {
+    return this.byzanlinkWallet.getPaymasterBalance(address);
   }
 
   async estimate(params: {

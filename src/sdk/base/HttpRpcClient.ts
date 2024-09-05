@@ -2,12 +2,12 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { resolveProperties } from 'ethers/lib/utils';
 import { UserOperationStruct } from '../contracts/account-abstraction/contracts/core/BaseAccount';
-import Debug from 'debug';
+//import Debug from 'debug';
 import { deepHexlify } from '../common/ERC4337Utils';
 import { Gas } from '../common';
 import { ErrorHandler } from '../errorHandler/errorHandler.service';
 
-const debug = Debug('aa.rpc');
+//const debug = Debug('aa.rpc');
 
 export class HttpRpcClient {
   private readonly userOpJsonRpcProvider: JsonRpcProvider;
@@ -145,15 +145,15 @@ export class HttpRpcClient {
     [userOp1, entryPointAddress]: [UserOperationStruct, string],
   ): Promise<void> {
     const userOp = await resolveProperties(userOp1);
-    debug(
-      'sending',
-      method,
-      {
-        ...userOp,
-        // initCode: (userOp.initCode ?? '').length,
-        // callData: (userOp.callData ?? '').length
-      },
-      entryPointAddress,
-    );
+    // debug(
+    //   'sending',
+    //   method,
+    //   {
+    //     ...userOp,
+    //     // initCode: (userOp.initCode ?? '').length,
+    //     // callData: (userOp.callData ?? '').length
+    //   },
+    //   entryPointAddress,
+    // );
   }
 }

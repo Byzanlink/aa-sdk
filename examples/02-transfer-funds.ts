@@ -3,9 +3,9 @@ import { ByzanlinkBundler, Factory, ByzanlinkAASdk } from '../src';
 import { printOp } from '../src/sdk/common/OperationUtils';
 import * as dotenv from 'dotenv';
 import { sleep } from '../src/sdk/common';
-import { Web3Auth } from "@web3auth/node-sdk";
-import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
-import { CHAIN_NAMESPACES } from "@web3auth/base";
+// import { Web3Auth } from "@web3auth/node-sdk";
+// import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+// import { CHAIN_NAMESPACES } from "@web3auth/base";
 import { get } from 'http';
 dotenv.config();
 

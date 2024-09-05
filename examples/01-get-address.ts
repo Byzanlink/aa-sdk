@@ -1,4 +1,3 @@
-import { BalanceError } from '@lifi/sdk';
 import { ByzanlinkBundler, ByzanlinkAASdk } from '../src';
 import * as dotenv from 'dotenv';
 
@@ -10,7 +9,7 @@ async function main() {
   const customBundlerUrl = '';
   const policyId = '588e4c2f-b662-447c-9972-f1ccd35743ac'; 
   // initializating sdk...
-  const byzanlinkAASdk = new ByzanlinkAASdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, { chainId: Number(process.env.CHAIN_ID),policyId: policyId,whiteListUser:true, apiKey: bundlerApiKey, bundlerProvider: new ByzanlinkBundler(Number(process.env.CHAIN_ID), bundlerApiKey) ,}) // Testnets dont need apiKey on bundlerProvider
+  const byzanlinkAASdk = new ByzanlinkAASdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, { chainId: Number(process.env.CHAIN_ID),policyId: policyId, apiKey: bundlerApiKey, bundlerProvider: new ByzanlinkBundler(Number(process.env.CHAIN_ID), bundlerApiKey) ,}) // Testnets dont need apiKey on bundlerProvider
 
   // get EtherspotWallet address...
   const address: string = await byzanlinkAASdk.getCounterFactualAddress();

@@ -4,7 +4,10 @@
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import type { Provider, TransactionRequest } from "@ethersproject/providers";
 import type { PromiseOrValue } from "../../../common";
-import type { Proxy, ProxyInterface } from "../../../src/wallet/Proxy";
+import type {
+  Proxy,
+  ProxyInterface,
+} from "../../../src/wallet/Proxy";
 
 const _abi = [
   {
@@ -45,16 +48,16 @@ export class Proxy__factory extends ContractFactory {
   }
 
   override deploy(
-    _singleton: PromiseOrValue<string>,
+    _implementation: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<Proxy> {
-    return super.deploy(_singleton, overrides || {}) as Promise<Proxy>;
+    return super.deploy(_implementation, overrides || {}) as Promise<Proxy>;
   }
   override getDeployTransaction(
-    _singleton: PromiseOrValue<string>,
+    _implementation: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
-    return super.getDeployTransaction(_singleton, overrides || {});
+    return super.getDeployTransaction(_implementation, overrides || {});
   }
   override attach(address: string): Proxy {
     return super.attach(address) as Proxy;
