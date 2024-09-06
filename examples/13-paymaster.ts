@@ -55,7 +55,10 @@ async function main() {
  // sign the UserOp and sending to the bundler...
   const uoHash = await byzanlinkAASdk.send(op);
   console.log(`UserOpHash: ${uoHash}`);
-
+ let verificationGasLimit = BigNumber.from(await op.verificationGasLimit).mul(3);
+ let preVerificationGas = BigNumber.from(await op.preVerificationGas);  
+ let callGasLimit = BigNumber.from(await op.callGasLimit);
+let totalGasNeeded = verificationGasLimit.add(preVerificationGas).add(callGasLimit);
   // get transaction hash...
   console.log('Waiting for transaction...');
   let userOpsReceipt = null;
@@ -68,6 +71,8 @@ async function main() {
   if(userOpsReceipt!=null){
     const PaymasterBalanceAfter  = await byzanlinkAASdk.getPaymasterBalance('0x967aAA81553E5f2229aA91cd9EDD3CD630d27483');
     let paymasterBalanceConsumed = prevPaymasterBalance.sub(PaymasterBalanceAfter); 
+    console.log('\x1b[33m%s\x1b[0m', `Total Estimation Gas  After paymaster Signing: `, ethers.utils.formatEther(totalGasNeeded));
+    console.log('\x1b[33m%s\x1b[0m', `Total Estimation Gas Cost After paymaster Signing: `, ethers.utils.formatEther(totalGasNeeded.mul(userOpsReceipt.receipt.effectiveGasPrice)));
     console.log('\x1b[33m%s\x1b[0m', `Paymaster Balance Before: `, ethers.utils.formatEther(prevPaymasterBalance));
     console.log('\x1b[33m%s\x1b[0m', `Paymaster Balance After: `, ethers.utils.formatEther(PaymasterBalanceAfter));
     console.log('\x1b[33m%s\x1b[0m', `Paymaster Balance consumed: `, ethers.utils.formatEther(paymasterBalanceConsumed));
