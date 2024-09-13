@@ -4,14 +4,17 @@
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import type { Provider, TransactionRequest } from "@ethersproject/providers";
 import type { PromiseOrValue } from "../../../common";
-import type { Proxy, ProxyInterface } from "../../../src/wallet/Proxy";
+import type {
+  Proxy,
+  ProxyInterface,
+} from "../../../src/wallet/Proxy";
 
 const _abi = [
   {
     inputs: [
       {
         internalType: "address",
-        name: "_singleton",
+        name: "_implementation",
         type: "address",
       },
     ],
@@ -25,7 +28,7 @@ const _abi = [
 ] as const;
 
 const _bytecode =
-  "0x608060405234801561001057600080fd5b5060405161016c38038061016c83398101604081905261002f916100b0565b6001600160a01b0381166100895760405162461bcd60e51b815260206004820152601860248201527f496e76616c696420616464726573732070726f76696465640000000000000000604482015260640160405180910390fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc556100e0565b6000602082840312156100c257600080fd5b81516001600160a01b03811681146100d957600080fd5b9392505050565b607e806100ee6000396000f3fe60806040527f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc543660008037600080366000845af43d6000803e806042573d6000fd5b503d6000f3fea2646970667358221220bf4792713f0ae541fee868815c68df07e96dbe0616b01cc209b0004f92ee91a964736f6c63430008110033";
+  "0x608060405234801561001057600080fd5b5060405161016c38038061016c83398101604081905261002f916100b0565b6001600160a01b0381166100895760405162461bcd60e51b815260206004820152601860248201527f496e76616c696420616464726573732070726f76696465640000000000000000604482015260640160405180910390fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc556100e0565b6000602082840312156100c257600080fd5b81516001600160a01b03811681146100d957600080fd5b9392505050565b607e806100ee6000396000f3fe60806040527f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc543660008037600080366000845af43d6000803e806042573d6000fd5b503d6000f3fea26469706673582212205a44bb12c402ed2f7f152324ceae05645453b1012f40f7449e488362d4e2ded064736f6c63430008170033";
 
 type ProxyConstructorParams =
   | [signer?: Signer]
@@ -45,16 +48,16 @@ export class Proxy__factory extends ContractFactory {
   }
 
   override deploy(
-    _singleton: PromiseOrValue<string>,
+    _implementation: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<Proxy> {
-    return super.deploy(_singleton, overrides || {}) as Promise<Proxy>;
+    return super.deploy(_implementation, overrides || {}) as Promise<Proxy>;
   }
   override getDeployTransaction(
-    _singleton: PromiseOrValue<string>,
+    _implementation: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
-    return super.getDeployTransaction(_singleton, overrides || {});
+    return super.getDeployTransaction(_implementation, overrides || {});
   }
   override attach(address: string): Proxy {
     return super.attach(address) as Proxy;

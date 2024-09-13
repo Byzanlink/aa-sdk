@@ -7,9 +7,7 @@ export interface PaymasterApi {
 }
 
 export enum Factory {
-  ZERO_DEV = 'zeroDev',
-  ETHERSPOT = 'etherspot',
-  SIMPLE_ACCOUNT = 'simpleAccount'
+  BYZANLINK = 'byzanlink',
 }
 
 export interface SdkOptions {
@@ -22,4 +20,6 @@ export interface SdkOptions {
   entryPointAddress?: string;
   accountAddress?: string;
   index?: number;
+  apiKey?: string;
+  policyId?: string;
 }

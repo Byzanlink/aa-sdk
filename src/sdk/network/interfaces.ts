@@ -11,9 +11,7 @@ export interface NetworkConfig {
   contracts: {
     entryPoint: string;
     walletFactory: {
-      etherspot: string;
-      zeroDev: string;
-      simpleAccount: string;
+      byzanlink: string;
     };
   };
 };

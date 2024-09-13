@@ -1,11 +1,12 @@
-import { BigNumber, BigNumberish, Contract, ethers } from 'ethers';
+import { BigNumber, BigNumberish, Contract } from 'ethers';
 import {
-  EntryPoint__factory,
+  ByzanlinkWallet,
+  ByzanlinkWallet__factory,
+  ByzanlinkWalletFactory,
+  ByzanlinkWalletFactory__factory,
 } from '../contracts';
 import { arrayify, hexConcat } from 'ethers/lib/utils';
 import { BaseApiParams, BaseAccountAPI } from './BaseAccountAPI';
-import { SimpleAccountAbi } from '../contracts/SimpleAccount/SimpleAccountAbi';
-import { SimpleAccountFactoryAbi } from '../contracts/SimpleAccount/SimpleAccountFactoryAbi';
 
 /**
  * constructor params, added no top of base params:
@@ -13,39 +14,55 @@ import { SimpleAccountFactoryAbi } from '../contracts/SimpleAccount/SimpleAccoun
  * @param factoryAddress address of contract "factory" to deploy new contracts (not needed if account already deployed)
  * @param index nonce value used when creating multiple accounts for the same owner
  */
-export interface SimpleAccountApiParams extends BaseApiParams {
+export interface ByzanlinkWalletApiParams extends BaseApiParams {
   factoryAddress?: string;
   index?: number;
+  predefinedAccountAddress?: string;
 }
 
 /**
- * An implementation of the BaseAccountAPI using the SimpleAccountWallet contract.
+ * An implementation of the BaseAccountAPI using the ByzanlinkWallet contract.
  * - contract deployer gets "entrypoint", "owner" addresses and "index" nonce
  * - owner signs requests using normal "Ethereum Signed Message" (ether's signer.signMessage())
  * - nonce method is "nonce()"
  * - execute method is "execFromEntryPoint()"
  */
-export class SimpleAccountAPI extends BaseAccountAPI {
+export class ByzanlinkWalletAPI extends BaseAccountAPI {
   factoryAddress?: string;
   index: number;
   accountAddress?: string;
+  predefinedAccountAddress?: string;
 
   /**
    * our account contract.
    * should support the "execFromEntryPoint" and "nonce" methods
    */
-  accountContract?: Contract;
+  accountContract?: ByzanlinkWallet;
 
-  factory?: Contract;
+  factory?: ByzanlinkWalletFactory;
 
-  constructor(params: SimpleAccountApiParams) {
+  constructor(params: ByzanlinkWalletApiParams) {
     super(params);
     this.factoryAddress = params.factoryAddress;
     this.index = params.index ?? 0;
+    this.predefinedAccountAddress = params.predefinedAccountAddress ?? null;
+    console.log('In constructor ether')
   }
 
-  async _getAccountContract(): Promise<Contract> {
-    this.accountContract = new ethers.Contract(this.accountAddress, SimpleAccountAbi, this.provider);
+  async checkAccountAddress(address: string): Promise<void> {
+    const accountContract = ByzanlinkWallet__factory.connect(address, this.provider);
+    if (!(await accountContract.isOwner(this.services.walletService.EOAAddress))) {
+      throw new Error('the specified accountAddress does not belong to the given EOA provider')
+    }
+    else {
+      this.accountAddress = address;
+    }
+  }
+
+  async _getAccountContract(): Promise<ByzanlinkWallet | Contract> {
+    if (this.accountContract == null) {
+      this.accountContract = ByzanlinkWallet__factory.connect(await this.getAccountAddress(), this.provider);
+    }
     return this.accountContract;
   }
 
@@ -54,7 +71,12 @@ export class SimpleAccountAPI extends BaseAccountAPI {
    * this value holds the "factory" address, followed by this account's information
    */
   async getAccountInitCode(): Promise<string> {
-    this.factory = new ethers.Contract(this.factoryAddress, SimpleAccountFactoryAbi, this.provider);
+    if (this.factoryAddress != null && this.factoryAddress !== '') {
+      console.log('In getAccountInitCode ether')
+      this.factory = ByzanlinkWalletFactory__factory.connect(this.factoryAddress, this.provider);
+    } else {
+      throw new Error('no factory to get initCode');
+    }
 
     return hexConcat([
       this.factoryAddress,
@@ -64,27 +86,31 @@ export class SimpleAccountAPI extends BaseAccountAPI {
       ]),
     ]);
   }
-
+  
   async getCounterFactualAddress(): Promise<string> {
-    if (!this.accountAddress) {
-      try {
-        const initCode = await this.getAccountInitCode();
-        const entryPoint = EntryPoint__factory.connect(this.entryPointAddress, this.provider);
-        await entryPoint.callStatic.getSenderAddress(initCode);
+    if (this.predefinedAccountAddress) {
+      await this.checkAccountAddress(this.predefinedAccountAddress);
+    }
+    console.log('In getCounterFactualAddress ether:', this.accountAddress)
 
-        throw new Error("getSenderAddress: unexpected result");
-      } catch (error: any) {
-        const addr = error?.errorArgs?.sender;
-        if (!addr) throw error;
-        if (addr === ethers.constants.AddressZero) throw new Error('Unsupported chain_id/walletFactoryAddress');
-        this.accountContract = new ethers.Contract(addr, SimpleAccountAbi, this.provider);
-        this.accountAddress = addr;
-      }
+    if (!this.accountAddress) {
+      console.log("Index:", this.services.walletService.EOAAddress, " ",this.index);
+
+      this.factory = ByzanlinkWalletFactory__factory.connect(this.factoryAddress, this.provider);
+      this.accountAddress = await this.factory.getAddress(
+        this.services.walletService.EOAAddress,
+        this.index,
+      );
     }
     return this.accountAddress;
   }
 
+  // async getInitCode(): Promise<string> {
+  //   return this.provider.getCode(this.accountAddress);
+  // }
+
   async getNonce(key = 0): Promise<BigNumber> {
+    console.log("IN NONCE",await this.checkAccountPhantom())
     if (await this.checkAccountPhantom()) {
       return BigNumber.from(0);
     }
@@ -113,6 +139,6 @@ export class SimpleAccountAPI extends BaseAccountAPI {
 
   async encodeBatch(targets: string[], values: BigNumberish[], datas: string[]): Promise<string> {
     const accountContract = await this._getAccountContract();
-    return accountContract.interface.encodeFunctionData('executeBatch', [targets, datas]);
+    return accountContract.interface.encodeFunctionData('executeBatch', [targets, values, datas]);
   }
 }

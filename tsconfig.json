@@ -23,5 +23,5 @@
     "./examples/**/*.ts",
     "./src/**/*.ts",
     "./test/**/*.ts"
-  ]
+, "src/sdk/network/constants.ts"  ]
 }

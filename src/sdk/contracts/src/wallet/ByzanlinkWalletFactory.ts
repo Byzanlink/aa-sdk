@@ -27,25 +27,41 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
-export interface IEtherspotWalletFactoryInterface extends utils.Interface {
+export interface ByzanlinkWalletFactoryInterface extends utils.Interface {
   functions: {
     "accountCreationCode()": FunctionFragment;
+    "accountImplementation()": FunctionFragment;
+    "changeOwner(address)": FunctionFragment;
     "checkImplementation(address)": FunctionFragment;
     "createAccount(address,uint256)": FunctionFragment;
     "getAddress(address,uint256)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "setImplementation(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "accountCreationCode"
+      | "accountImplementation"
+      | "changeOwner"
       | "checkImplementation"
       | "createAccount"
       | "getAddress"
+      | "owner"
+      | "setImplementation"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "accountCreationCode",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "accountImplementation",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changeOwner",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "checkImplementation",
@@ -59,9 +75,22 @@ export interface IEtherspotWalletFactoryInterface extends utils.Interface {
     functionFragment: "getAddress",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setImplementation",
+    values: [PromiseOrValue<string>]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "accountCreationCode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "accountImplementation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "changeOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -73,14 +102,21 @@ export interface IEtherspotWalletFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getAddress", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setImplementation",
+    data: BytesLike
+  ): Result;
 
   events: {
     "AccountCreation(address,address,uint256)": EventFragment;
     "ImplementationSet(address)": EventFragment;
+    "OwnerChanged(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AccountCreation"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ImplementationSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnerChanged"): EventFragment;
 }
 
 export interface AccountCreationEventObject {
@@ -106,12 +142,19 @@ export type ImplementationSetEvent = TypedEvent<
 export type ImplementationSetEventFilter =
   TypedEventFilter<ImplementationSetEvent>;
 
-export interface IEtherspotWalletFactory extends BaseContract {
+export interface OwnerChangedEventObject {
+  newOwner: string;
+}
+export type OwnerChangedEvent = TypedEvent<[string], OwnerChangedEventObject>;
+
+export type OwnerChangedEventFilter = TypedEventFilter<OwnerChangedEvent>;
+
+export interface ByzanlinkWalletFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IEtherspotWalletFactoryInterface;
+  interface: ByzanlinkWalletFactoryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -135,6 +178,13 @@ export interface IEtherspotWalletFactory extends BaseContract {
   functions: {
     accountCreationCode(overrides?: CallOverrides): Promise<[string]>;
 
+    accountImplementation(overrides?: CallOverrides): Promise<[string]>;
+
+    changeOwner(
+      _newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     checkImplementation(
       _impl: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -151,9 +201,23 @@ export interface IEtherspotWalletFactory extends BaseContract {
       _index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string] & { proxy: string }>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    setImplementation(
+      _newImpl: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   accountCreationCode(overrides?: CallOverrides): Promise<string>;
+
+  accountImplementation(overrides?: CallOverrides): Promise<string>;
+
+  changeOwner(
+    _newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   checkImplementation(
     _impl: PromiseOrValue<string>,
@@ -172,8 +236,22 @@ export interface IEtherspotWalletFactory extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  setImplementation(
+    _newImpl: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     accountCreationCode(overrides?: CallOverrides): Promise<string>;
+
+    accountImplementation(overrides?: CallOverrides): Promise<string>;
+
+    changeOwner(
+      _newOwner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     checkImplementation(
       _impl: PromiseOrValue<string>,
@@ -191,6 +269,13 @@ export interface IEtherspotWalletFactory extends BaseContract {
       _index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    setImplementation(
+      _newImpl: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -209,10 +294,20 @@ export interface IEtherspotWalletFactory extends BaseContract {
       newImplementation?: null
     ): ImplementationSetEventFilter;
     ImplementationSet(newImplementation?: null): ImplementationSetEventFilter;
+
+    "OwnerChanged(address)"(newOwner?: null): OwnerChangedEventFilter;
+    OwnerChanged(newOwner?: null): OwnerChangedEventFilter;
   };
 
   estimateGas: {
     accountCreationCode(overrides?: CallOverrides): Promise<BigNumber>;
+
+    accountImplementation(overrides?: CallOverrides): Promise<BigNumber>;
+
+    changeOwner(
+      _newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     checkImplementation(
       _impl: PromiseOrValue<string>,
@@ -229,6 +324,13 @@ export interface IEtherspotWalletFactory extends BaseContract {
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setImplementation(
+      _newImpl: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
@@ -237,6 +339,15 @@ export interface IEtherspotWalletFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    accountImplementation(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    changeOwner(
+      _newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     checkImplementation(
       _impl: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -252,6 +363,13 @@ export interface IEtherspotWalletFactory extends BaseContract {
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setImplementation(
+      _newImpl: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

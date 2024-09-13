@@ -2,7 +2,7 @@ import { Exception } from "../../common";
 import { getNetworkConfig } from "../../network/constants";
 import { BundlerProvider } from "../interface";
 
-export class EtherspotBundler implements BundlerProvider {
+export class ByzanlinkBundler implements BundlerProvider {
   readonly url: string;
   readonly apiKey: string;
   readonly chainId: string;
@@ -14,8 +14,8 @@ export class EtherspotBundler implements BundlerProvider {
       bundlerUrl = networkConfig.bundler;
     }
     if (apiKey) {
-      if (bundlerUrl.includes('?api-key=')) this.url = bundlerUrl + apiKey;
-      else this.url = bundlerUrl + '?api-key=' + apiKey;
+      if (bundlerUrl.includes('?apiKey=')) this.url = bundlerUrl + apiKey;
+      else this.url = bundlerUrl + '?apiKey=' + apiKey;
     }
     else this.url = bundlerUrl;
     this.apiKey = apiKey;

@@ -266,12 +266,16 @@ export abstract class BaseAccountAPI {
       return this.isPhantom;
     }
     const senderAddressCode = await this.provider.getCode(this.getAccountAddress());
+    console.log('senderAddressCode',senderAddressCode)
+
     if (senderAddressCode.length > 2) {
       // console.log(`SimpleAccount Contract already deployed at ${this.senderAddress}`)
       this.isPhantom = false;
     } else {
       // console.log(`SimpleAccount Contract is NOT YET deployed at ${this.senderAddress} - working in "phantom account" mode.`)
     }
+    console.log("isPhantom")
+    console.log(this.isPhantom)
     return this.isPhantom;
   }
 
@@ -284,18 +288,38 @@ export abstract class BaseAccountAPI {
     // this method attempts to be generic
     try {
       await this.entryPointView.callStatic.getSenderAddress(initCode);
+      console.log('In getCounterFactualAddress ether')
     } catch (e: any) {
       return e.errorArgs.sender;
     }
     throw new Error('must handle revert');
   }
 
+
+  /**
+   * Get the paymaster balance for the given address
+   * @param address
+   */
+  async getPaymasterBalance(address: string): Promise<BigNumber> {
+    try {
+      console.log('In paymaster balance ether')
+    return await this.entryPointView.callStatic.balanceOf(address);
+    } catch (e: any) {
+      return e.errorArgs.balance;
+    }
+  }
+   
+
   /**
    * return initCode value to into the UserOp.
    * (either deployment code, or empty hex if contract already deployed)
    */
   async getInitCode(): Promise<string> {
+
+    console.log(await this.checkAccountPhantom())
+
     if (await this.checkAccountPhantom()) {
+      console.log("getInitCode")
       return await this.getAccountInitCode();
     }
     return '0x';
@@ -342,9 +366,7 @@ export abstract class BaseAccountAPI {
         throw new Error('must have target address if data is single value');
       }
       callData = await this.encodeExecute(target, value, data);
-    } else if (this.factoryUsed === Factory.SIMPLE_ACCOUNT && target.length === 1){
-      callData = await this.encodeExecute(target[0], detailsForUserOp.values[0], data[0]);
-    } else {
+    }  else {
       if (typeof target === 'string') {
         target = Array(data.length).fill(target);
       }
@@ -403,8 +425,10 @@ export abstract class BaseAccountAPI {
    */
   async createUnsignedUserOp(info: TransactionDetailsForUserOp, key = 0): Promise<UserOperationStruct> {
     const { callData, callGasLimit } = await this.encodeUserOpCallDataAndGasLimit(info);
+    console.log("**********************************")
     const initCode = await this.getInitCode();
-
+console.log(initCode)
+console.log("initCode")
     const initGas = await this.estimateCreationGas(initCode);
     const verificationGasLimit = BigNumber.from(await this.getVerificationGasLimit()).add(initGas);
 

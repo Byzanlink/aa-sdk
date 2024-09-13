@@ -13,26 +13,27 @@ import { BatchUserOpsRequest, Exception, getGasFee, onRampApiKey, openUrl, UserO
 import { BigNumber, BigNumberish, ethers, providers, TypedDataField } from 'ethers';
 import { Networks, onRamperAllNetworks } from './network/constants';
 import { UserOperationStruct } from './contracts/account-abstraction/contracts/core/BaseAccount';
-import { EtherspotWalletAPI, HttpRpcClient, VerifyingPaymasterAPI } from './base';
+import { ByzanlinkWalletAPI, HttpRpcClient, VerifyingPaymasterAPI } from './base';
 import { TransactionDetailsForUserOp, TransactionGasInfoForUserOp } from './base/TransactionDetailsForUserOp';
 import { OnRamperDto, SignMessageDto, validateDto } from './dto';
-import { ZeroDevWalletAPI } from './base/ZeroDevWalletAPI';
-import { SimpleAccountAPI } from './base/SimpleAccountWalletAPI';
 import { ErrorHandler } from './errorHandler/errorHandler.service';
-import { EtherspotBundler } from './bundler';
+import { ByzanlinkBundler } from './bundler';
+import { ByzanlinkPaymaster } from './paymaster';
 
 /**
- * Prime-Sdk
+ * Byzanlink-AA-Sdk
  *
  * @category Prime-Sdk
  */
-export class PrimeSdk {
+export class ByzanlinkAASdk {
 
-  private etherspotWallet: EtherspotWalletAPI | ZeroDevWalletAPI | SimpleAccountAPI;
+  private byzanlinkWallet: ByzanlinkWalletAPI ;
   private bundler: HttpRpcClient;
   private chainId: number;
   private factoryUsed: Factory;
   private index: number;
+  private apiKey: string;
+  private policyId: string;
 
   private userOpsBatch: BatchUserOpsRequest = { to: [], data: [], value: [] };
 
@@ -50,16 +51,19 @@ export class PrimeSdk {
       chainId,
       rpcProviderUrl,
       accountAddress,
+      apiKey,
+      policyId,
     } = optionsLike;
 
     this.chainId = chainId;
     this.index = index ?? 0;
-
+    this.apiKey = apiKey;
+    this.policyId = policyId;
     if (!optionsLike.bundlerProvider) {
-      optionsLike.bundlerProvider = new EtherspotBundler(chainId);
+      optionsLike.bundlerProvider = new ByzanlinkBundler(chainId,apiKey,rpcProviderUrl);
     }
 
-    this.factoryUsed = optionsLike.factoryWallet ?? Factory.ETHERSPOT;
+    this.factoryUsed = optionsLike.factoryWallet ?? Factory.BYZANLINK;
 
     let provider;
 
@@ -80,36 +84,17 @@ export class PrimeSdk {
     if (entryPointAddress == '') throw new Exception('entryPointAddress not set on the given chain_id')
     if (walletFactoryAddress == '') throw new Exception('walletFactoryAddress not set on the given chain_id')
 
-    if (this.factoryUsed === Factory.ZERO_DEV) {
-      this.etherspotWallet = new ZeroDevWalletAPI({
-        provider,
-        walletProvider: walletConnectProvider ?? walletProvider,
-        optionsLike,
-        entryPointAddress,
-        factoryAddress: walletFactoryAddress,
-        index: this.index,
-      })
-    } else if (this.factoryUsed === Factory.SIMPLE_ACCOUNT) {
-      this.etherspotWallet = new SimpleAccountAPI({
-        provider,
-        walletProvider: walletConnectProvider ?? walletProvider,
-        optionsLike,
-        entryPointAddress,
-        factoryAddress: walletFactoryAddress,
-        index: this.index,
-      })
-    }
-    else {
-      this.etherspotWallet = new EtherspotWalletAPI({
-        provider,
-        walletProvider: walletConnectProvider ?? walletProvider,
-        optionsLike,
-        entryPointAddress,
-        factoryAddress: walletFactoryAddress,
-        predefinedAccountAddress: accountAddress,
-        index: this.index,
-      })
-    }
+
+    this.byzanlinkWallet = new ByzanlinkWalletAPI({
+      provider,
+      walletProvider: walletConnectProvider ?? walletProvider,
+      optionsLike,
+      entryPointAddress,
+      factoryAddress: walletFactoryAddress,
+      predefinedAccountAddress: accountAddress,
+      index: this.index,
+    })
+
     this.bundler = new HttpRpcClient(optionsLike.bundlerProvider.url, entryPointAddress, chainId);
 
   }
@@ -117,22 +102,22 @@ export class PrimeSdk {
 
   // exposes
   get state(): StateService {
-    return this.etherspotWallet.services.stateService;
+    return this.byzanlinkWallet.services.stateService;
   }
 
   get state$(): BehaviorSubject<State> {
-    return this.etherspotWallet.services.stateService.state$;
+    return this.byzanlinkWallet.services.stateService.state$;
   }
 
   get supportedNetworks(): Network[] {
-    return this.etherspotWallet.services.networkService.supportedNetworks;
+    return this.byzanlinkWallet.services.networkService.supportedNetworks;
   }
 
   /**
    * destroys
    */
   destroy(): void {
-    this.etherspotWallet.context.destroy();
+    this.byzanlinkWallet.context.destroy();
   }
 
   // wallet
@@ -145,15 +130,19 @@ export class PrimeSdk {
   async signMessage(dto: SignMessageDto): Promise<string> {
     const { message } = await validateDto(dto, SignMessageDto);
 
-    await this.etherspotWallet.require({
+    await this.byzanlinkWallet.require({
       network: false,
     });
 
-    return this.etherspotWallet.services.walletService.signMessage(message);
+    return this.byzanlinkWallet.services.walletService.signMessage(message);
   }
 
   async getCounterFactualAddress(): Promise<string> {
-    return this.etherspotWallet.getCounterFactualAddress();
+    return this.byzanlinkWallet.getCounterFactualAddress();
+  }
+
+  async getPaymasterBalance(address: string): Promise<BigNumber> {
+    return this.byzanlinkWallet.getPaymasterBalance(address);
   }
 
   async estimate(params: {
@@ -165,21 +154,14 @@ export class PrimeSdk {
     const { paymasterDetails, gasDetails, callGasLimit, key } = params;
     let dummySignature = "0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c";
 
-    /**
-     * Dummy signature used only in the case of zeroDev factory contract
-     */
-    if (this.factoryUsed === Factory.ZERO_DEV) {
-      dummySignature = "0x00000000870fe151d548a1c527c3804866fab30abf28ed17b79d5fc5149f19ca0819fefc3c57f3da4fdf9b10fab3f2f3dca536467ae44943b9dbb8433efe7760ddd72aaa1c"
-    }
-
     if (this.userOpsBatch.to.length < 1) {
       throw new ErrorHandler('cannot sign empty transaction batch', 1);
     }
 
     if (paymasterDetails?.url) {
-      const paymasterAPI = new VerifyingPaymasterAPI(paymasterDetails.url, this.etherspotWallet.entryPointAddress, paymasterDetails.context ?? {})
-      this.etherspotWallet.setPaymasterApi(paymasterAPI)
-    } else this.etherspotWallet.setPaymasterApi(null);
+      const paymasterAPI = new VerifyingPaymasterAPI(paymasterDetails.url, this.byzanlinkWallet.entryPointAddress, paymasterDetails.context ?? {}, this.chainId, this.apiKey, this.policyId)
+      this.byzanlinkWallet.setPaymasterApi(paymasterAPI)
+    } else this.byzanlinkWallet.setPaymasterApi(null);
 
     const tx: TransactionDetailsForUserOp = {
       target: this.userOpsBatch.to,
@@ -191,7 +173,7 @@ export class PrimeSdk {
 
     const gasInfo = await this.getGasFee()
 
-    const partialtx = await this.etherspotWallet.createUnsignedUserOp({
+    const partialtx = await this.byzanlinkWallet.createUnsignedUserOp({
       ...tx,
       maxFeePerGas: gasInfo.maxFeePerGas,
       maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
@@ -236,11 +218,11 @@ export class PrimeSdk {
     const version = await this.bundler.getBundlerVersion();
     if (version && version.includes('skandha'))
       return this.bundler.getSkandhaGasPrice();
-    return getGasFee(this.etherspotWallet.provider as providers.JsonRpcProvider);
+    return getGasFee(this.byzanlinkWallet.provider as providers.JsonRpcProvider);
   }
 
   async send(userOp: UserOperationStruct) {
-    const signedUserOp = await this.etherspotWallet.signUserOp(userOp);
+    const signedUserOp = await this.byzanlinkWallet.signUserOp(userOp);
     return this.bundler.sendUserOpToBundler(signedUserOp);
   }
 
@@ -248,14 +230,14 @@ export class PrimeSdk {
     DataFields: TypedDataField[],
     message: any
   ) {
-    return this.etherspotWallet.signTypedData(DataFields, message);
+    return this.byzanlinkWallet.signTypedData(DataFields, message);
   }
 
   async getNativeBalance() {
-    if (!this.etherspotWallet.accountAddress) {
+    if (!this.byzanlinkWallet.accountAddress) {
       await this.getCounterFactualAddress();
     }
-    const balance = await this.etherspotWallet.provider.getBalance(this.etherspotWallet.accountAddress);
+    const balance = await this.byzanlinkWallet.provider.getBalance(this.byzanlinkWallet.accountAddress);
     return ethers.utils.formatEther(balance);
   }
 
@@ -264,14 +246,13 @@ export class PrimeSdk {
   }
 
   async getUserOpHash(userOp: UserOperationStruct) {
-    return this.etherspotWallet.getUserOpHash(userOp);
+    return this.byzanlinkWallet.getUserOpHash(userOp);
   }
 
   async addUserOpsToBatch(
     tx: UserOpsRequest,
   ): Promise<BatchUserOpsRequest> {
     if (!tx.data && !tx.value) throw new ErrorHandler('Data and Value both cannot be empty', 1);
-    if (tx.value && this.factoryUsed === Factory.SIMPLE_ACCOUNT && tx.value.toString() !== '0' && this.userOpsBatch.value.length > 0) throw new ErrorHandler('SimpleAccount: native transfers cant be part of batch', 1);
     this.userOpsBatch.to.push(tx.to);
     this.userOpsBatch.value.push(tx.value ?? BigNumber.from(0));
     this.userOpsBatch.data.push(tx.data ?? '0x');
@@ -285,7 +266,7 @@ export class PrimeSdk {
   }
 
   async getAccountContract() {
-    return this.etherspotWallet._getAccountContract();
+    return this.byzanlinkWallet._getAccountContract();
   }
 
   async totalGasEstimated(userOp: UserOperationStruct): Promise<BigNumber> {

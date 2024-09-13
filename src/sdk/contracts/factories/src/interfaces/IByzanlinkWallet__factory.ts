@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  IEtherspotWallet,
-  IEtherspotWalletInterface,
-} from "../../../src/interfaces/IEtherspotWallet";
+  IByzanlinkWallet,
+  IByzanlinkWalletInterface,
+} from "../../../src/interfaces/IByzanlinkWallet";
 
 const _abi = [
   {
@@ -26,7 +26,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "EtherspotWalletInitialized",
+    name: "ByzanlinkWalletInitialized",
     type: "event",
   },
   {
@@ -45,7 +45,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "EtherspotWalletReceived",
+    name: "ByzanlinkWalletReceived",
     type: "event",
   },
   {
@@ -478,15 +478,15 @@ const _abi = [
   },
 ] as const;
 
-export class IEtherspotWallet__factory {
+export class IByzanlinkWallet__factory {
   static readonly abi = _abi;
-  static createInterface(): IEtherspotWalletInterface {
-    return new utils.Interface(_abi) as IEtherspotWalletInterface;
+  static createInterface(): IByzanlinkWalletInterface {
+    return new utils.Interface(_abi) as IByzanlinkWalletInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IEtherspotWallet {
-    return new Contract(address, _abi, signerOrProvider) as IEtherspotWallet;
+  ): IByzanlinkWallet {
+    return new Contract(address, _abi, signerOrProvider) as IByzanlinkWallet;
   }
 }

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { EtherspotBundler, PrimeSdk } from '../src';
+import { ByzanlinkBundler, ByzanlinkAASdk } from '../src';
 import { printOp } from '../src/sdk/common/OperationUtils';
 import * as dotenv from 'dotenv';
 import { sleep } from '../src/sdk/common';
@@ -7,24 +7,24 @@ import { sleep } from '../src/sdk/common';
 dotenv.config();
 
 async function main() {
-  const bundlerApiKey = 'eyJvcmciOiI2NTIzZjY5MzUwOTBmNzAwMDFiYjJkZWIiLCJpZCI6IjMxMDZiOGY2NTRhZTRhZTM4MGVjYjJiN2Q2NDMzMjM4IiwiaCI6Im11cm11cjEyOCJ9';
+  const bundlerApiKey = '3397bd71b15a411388b0ba5cb6b2efe8';
   
   // initializating sdk...
-  const primeSdk = new PrimeSdk(
+  const byzanlinkAASdk = new ByzanlinkAASdk(
     { privateKey: process.env.WALLET_PRIVATE_KEY },
-    { chainId: Number(process.env.CHAIN_ID), bundlerProvider: new EtherspotBundler(Number(process.env.CHAIN_ID), bundlerApiKey) },
+    { chainId: Number(process.env.CHAIN_ID), bundlerProvider: new ByzanlinkBundler(Number(process.env.CHAIN_ID), bundlerApiKey) },
   );
 
-  console.log('address: ', primeSdk.state.EOAAddress);
+  console.log('address: ', byzanlinkAASdk.state.EOAAddress);
 
   // get address of EtherspotWallet
-  const address: string = await primeSdk.getCounterFactualAddress();
+  const address: string = await byzanlinkAASdk.getCounterFactualAddress();
 
   // update the addresses in this array with the guardian addresses you want to set
   const guardianAddresses: string[] = [
-    '0xa8430797A27A652C03C46D5939a8e7698491BEd6',
-    '0xaf2D76acc5B0e496f924B08491444076219F2f35',
-    '0xBF1c0A9F3239f5e7D35cE562Af06c92FB7fdF0DF',
+    '0xCd7C976c47F0de6A19DE540e473e85894bF9C9b4',
+    '0x13dBB7A7e1bBAFf1894cfbeb1382043060a220cb',
+    '0x0266c5192fF26CDA6697e0F86Bd42c002Ee68C8E',
   ];
 
   console.log('\x1b[33m%s\x1b[0m', `EtherspotWallet address: ${address}`);
@@ -36,20 +36,20 @@ async function main() {
   const addGuardianData3 = addGuardianInterface.encodeFunctionData('addGuardian', [guardianAddresses[2]]);
 
   // clear the transaction batch
-  await primeSdk.clearUserOpsFromBatch();
+  await byzanlinkAASdk.clearUserOpsFromBatch();
 
   // add transactions to the batch
-  let userOpsBatch = await primeSdk.addUserOpsToBatch({ to: address, data: addGuardianData1 });
-  userOpsBatch = await primeSdk.addUserOpsToBatch({ to: address, data: addGuardianData2 });
-  userOpsBatch = await primeSdk.addUserOpsToBatch({ to: address, data: addGuardianData3 });
+  let userOpsBatch = await byzanlinkAASdk.addUserOpsToBatch({ to: address, data: addGuardianData1 });
+  //userOpsBatch = await byzanlinkAASdk.addUserOpsToBatch({ to: address, data: addGuardianData2 });
+  //userOpsBatch = await byzanlinkAASdk.addUserOpsToBatch({ to: address, data: addGuardianData3 });
   console.log('transactions: ', userOpsBatch);
 
   // sign transactions added to the batch
-  const op = await primeSdk.estimate();
+  const op = await byzanlinkAASdk.estimate();
   console.log(`Estimated UserOp: ${await printOp(op)}`);
 
   // sign the userOps and sending to the bundler...
-  const uoHash = await primeSdk.send(op);
+  const uoHash = await byzanlinkAASdk.send(op);
   console.log(`UserOpHash: ${uoHash}`);
 
   // get transaction hash...
@@ -58,7 +58,7 @@ async function main() {
   const timeout = Date.now() + 60000; // 1 minute timeout
   while (userOpsReceipt == null && Date.now() < timeout) {
     await sleep(2);
-    userOpsReceipt = await primeSdk.getUserOpReceipt(uoHash);
+    userOpsReceipt = await byzanlinkAASdk.getUserOpReceipt(uoHash);
   }
   console.log('\x1b[33m%s\x1b[0m', `Transaction Receipt: `, userOpsReceipt);
 }

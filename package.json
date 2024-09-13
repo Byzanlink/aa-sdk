@@ -1,7 +1,7 @@
 {
-  "name": "@etherspot/prime-sdk",
-  "version": "1.8.1",
-  "description": "Etherspot Prime (Account Abstraction) SDK",
+  "name": "@byzanlink/aa-sdk",
+  "version": "1.0.11",
+  "description": "Byzanlink (Account Abstraction) SDK",
   "keywords": [
     "ether",
     "ethereum",
@@ -10,10 +10,12 @@
     "blockchain",
     "account abstraction",
     "4337",
-    "etherspot"
+    "byzanlink",
+    "aa"
   ],
   "license": "MIT",
-  "homepage": "https://etherspot.dev",
+  "private": false,
+  "homepage": "https://byzanlink.com",
   "main": "./dist/node.js",
   "browser": {
     "./dist/browser.js": "./dist/browser.js",
@@ -24,6 +26,7 @@
     "start": "exit 1",
     "01-get-address": "./node_modules/.bin/ts-node ./examples/01-get-address",
     "02-transfer-funds": "./node_modules/.bin/ts-node ./examples/02-transfer-funds",
+    "02-transfer-funds-receipt": "./node_modules/.bin/ts-node ./examples/02-transfer-funds-receipt",
     "03-transfer-erc20": "./node_modules/.bin/ts-node ./examples/03-transfer-erc20",
     "05-get-account-balances": "./node_modules/.bin/ts-node ./examples/05-get-account-balances",
     "06-transaction": "./node_modules/.bin/ts-node ./examples/06-transaction",
@@ -43,6 +46,7 @@
     "21-get-multiple-accounts": "./node_modules/.bin/ts-node ./examples/21-get-multiple-accounts",
     "22-concurrent-userops": "./node_modules/.bin/ts-node ./examples/22-concurrent-userops",
     "25-get-quotes": "./node_modules/.bin/ts-node ./examples/25-get-quotes",
+    "24-ByzanlinkPaymaster": "./node_modules/.bin/ts-node ./examples/24-ByzanlinkPaymaster",
     "format": "prettier --write \"{src,test,examples}/**/*.ts\"",
     "lint": "eslint \"{src,test,examples}/**/*.ts\"",
     "lint-fix": "npm run lint -- --fix",
@@ -59,10 +63,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/etherspot/etherspot-prime-sdk.git"
+    "url": "git+https://github.com/Byzanlink/aa-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/etherspot/etherspot-prime-sdk/issues"
+    "url": "https://github.com/Byzanlink/aa-sdk/issues"
   },
   "dependencies": {
     "@apollo/client": "3.8.7",
@@ -93,7 +97,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "npm": "9.6.4",
-    "ts-node": "10.9.1",
+    "ts-node": "^10.9.1",
     "typedoc": "^0.17.8",
     "typescript": "4.9.5"
   }
