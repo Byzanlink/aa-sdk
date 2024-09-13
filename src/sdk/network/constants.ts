@@ -88,17 +88,19 @@ export const Networks: {
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
-        byzanlink: '0x7f6d8F107fE8551160BD5351d5F1514A6aD5d40E'
+        byzanlink: '0x2639F0635e9938778d56567152006fBC3252DE5e'
       }
     },
   },
   [80002]: {
     chainId: 80002,
-    bundler: 'https://dev.byzanlink.com/bundler/80002/rpc',
+   bundler: 'https://dev.byzanlink.com/bundler/80002/rpc',
+   //bundler: 'http://0.0.0.0:14337/rpc',
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
-        byzanlink: '0xBAf0d462bc4E6fb4e092e5a19DEc471c7B394fB6'
+       // byzanlink: '0xBAf0d462bc4E6fb4e092e5a19DEc471c7B394fB6'
+      byzanlink: '0x2639F0635e9938778d56567152006fBC3252DE5e' 
       }
     }
   }
