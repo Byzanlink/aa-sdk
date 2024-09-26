@@ -26,7 +26,6 @@ export class ByzanlinkPaymaster implements PaymasterProvider {
     const validAddresses = addresses.every(ethers.utils.isAddress);
     if (!validAddresses) throw new Error(ErrorMessage.INVALID_ADDRESS);
     try {
-      console.log(this.policyId);
       response = await fetch(`${this.url}/whitelist`, {
         method: 'PUT',
         headers: {

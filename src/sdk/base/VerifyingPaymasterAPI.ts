@@ -58,7 +58,6 @@ export class VerifyingPaymasterAPI extends PaymasterAPI {
     op.preVerificationGas = calcPreVerificationGas(op);
 
     // Ask the paymaster to sign the transaction and return a valid paymasterAndData value.
-    console.log(this.paymasterUrl)
     const paymasterAndData = await fetch(this.paymasterUrl, {
       method: 'POST',
       headers: {
@@ -78,7 +77,6 @@ export class VerifyingPaymasterAPI extends PaymasterAPI {
         return response
       })
       .catch((err) => {
-        console.log(err)
         throw new Error(err.message);
       })
 

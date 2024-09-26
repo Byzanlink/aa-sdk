@@ -216,7 +216,7 @@ export class ByzanlinkAASdk {
 
   async getGasFee() {
     const version = await this.bundler.getBundlerVersion();
-    if (version && version.includes('skandha'))
+    if (version && version.includes('byzanlink-bundler'))
       return this.bundler.getSkandhaGasPrice();
     return getGasFee(this.byzanlinkWallet.provider as providers.JsonRpcProvider);
   }
