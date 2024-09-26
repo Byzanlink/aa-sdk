@@ -46,7 +46,6 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
     this.factoryAddress = params.factoryAddress;
     this.index = params.index ?? 0;
     this.predefinedAccountAddress = params.predefinedAccountAddress ?? null;
-    console.log('In constructor ether')
   }
 
   async checkAccountAddress(address: string): Promise<void> {
@@ -72,7 +71,6 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
    */
   async getAccountInitCode(): Promise<string> {
     if (this.factoryAddress != null && this.factoryAddress !== '') {
-      console.log('In getAccountInitCode ether')
       this.factory = ByzanlinkWalletFactory__factory.connect(this.factoryAddress, this.provider);
     } else {
       throw new Error('no factory to get initCode');
@@ -91,10 +89,8 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
     if (this.predefinedAccountAddress) {
       await this.checkAccountAddress(this.predefinedAccountAddress);
     }
-    console.log('In getCounterFactualAddress ether:', this.accountAddress)
 
     if (!this.accountAddress) {
-      console.log("Index:", this.services.walletService.EOAAddress, " ",this.index);
 
       this.factory = ByzanlinkWalletFactory__factory.connect(this.factoryAddress, this.provider);
       this.accountAddress = await this.factory.getAddress(
@@ -110,7 +106,6 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
   // }
 
   async getNonce(key = 0): Promise<BigNumber> {
-    console.log("IN NONCE",await this.checkAccountPhantom())
     if (await this.checkAccountPhantom()) {
       return BigNumber.from(0);
     }
