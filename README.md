@@ -30,7 +30,7 @@ npm i @byzanlink/aa-sdk
 
 To Get the project key, register to [https://dev.byzanlink.com/]
 
-**Note: It is necessary to include the `projectKey` parameter in the ByzanlinkAASdk.**
+**Note: It is necessary to include the `apiKey` parameter in the ByzanlinkAASdk.**
 
 ## 📖 Documentation
 
