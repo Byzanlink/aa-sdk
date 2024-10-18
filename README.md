@@ -17,7 +17,7 @@
 
 Byzanlink AA is a fully open source SDK which let's dapp developers easily get building with Account Abstraction.
 
-The SDK makes it incredibly easy to get up and running with Account Abstraction. From social logins to transaction batching, using an Etherspot smart wallet can give your dapp a web2 like interface to ensure the user has a seamless experience.
+The SDK makes it incredibly easy to get up and running with Account Abstraction. From social logins to transaction batching, using an Byzanlink smart wallet can give your dapp a web2 like interface to ensure the user has a seamless experience.
 
 ## ⚙ Get started
 
