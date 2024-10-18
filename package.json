@@ -1,6 +1,6 @@
 {
   "name": "@byzanlink/aa-sdk",
-  "version": "1.0.11",
+  "version": "1.0.47",
   "description": "Byzanlink (Account Abstraction) SDK",
   "keywords": [
     "ether",
@@ -71,9 +71,17 @@
   "dependencies": {
     "@apollo/client": "3.8.7",
     "@lifi/sdk": "2.5.0",
+    "@sentry/types": "^8.34.0",
     "@thehubbleproject/bls": "0.5.1",
+    "@toruslabs/tss-dkls-lib": "^4.0.0",
+    "@toruslabs/tss-frost-lib": "^1.0.0",
     "@walletconnect/universal-provider": "2.10.0",
+    "@web3auth/base": "^9.2.3",
+    "@web3auth/ethereum-mpc-provider": "^9.2.3",
+    "@web3auth/mpc-core-kit": "^3.2.4",
     "apollo-link-ws": "1.0.20",
+    "artillery": "^2.0.20",
+    "bn.js": "^5.2.1",
     "buffer": "^6.0.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",

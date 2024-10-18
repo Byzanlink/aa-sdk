@@ -85,6 +85,7 @@ export const Networks: {
   [137]: {
     chainId: 137,
     bundler: 'https://dev.byzanlink.com/bundler/137/rpc',
+    //bundler: 'http://0.0.0.0:14337/rpc',
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
@@ -95,7 +96,7 @@ export const Networks: {
   [80002]: {
     chainId: 80002,
    bundler: 'https://dev.byzanlink.com/bundler/80002/rpc',
-   //bundler: 'http://0.0.0.0:14337/rpc',
+  //bundler: 'http://0.0.0.0:14337/rpc',
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {

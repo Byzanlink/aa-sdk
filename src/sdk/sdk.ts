@@ -5,7 +5,8 @@ import {
   isWalletConnectProvider,
   isWalletProvider,
   WalletConnect2WalletProvider,
-  WalletProviderLike
+  WalletProviderLike,
+  Web3WalletProvider
 } from './wallet';
 import { Factory, PaymasterApi, SdkOptions } from './interfaces';
 import { Network } from "./network";
@@ -18,31 +19,80 @@ import { TransactionDetailsForUserOp, TransactionGasInfoForUserOp } from './base
 import { OnRamperDto, SignMessageDto, validateDto } from './dto';
 import { ErrorHandler } from './errorHandler/errorHandler.service';
 import { ByzanlinkBundler } from './bundler';
-import { ByzanlinkPaymaster } from './paymaster';
+import { CustomChainConfig } from './walletInfraProvider/ChainInterface';
+import { WalletAuthOptions } from './walletInfraProvider/interfaces';
+import { ProviderFactory } from './walletInfraProvider/WalletInfraFactory';
+import { BaseWalletInfra } from './walletInfraProvider/BaseWalletInfra';
 
 /**
- * Byzanlink-AA-Sdk
  *
- * @category Prime-Sdk
+ *
+ * @export
+ * @class ByzanlinkAASdk
  */
 export class ByzanlinkAASdk {
 
-  private byzanlinkWallet: ByzanlinkWalletAPI ;
+  private byzanlinkWallet: ByzanlinkWalletAPI;
   private bundler: HttpRpcClient;
   private chainId: number;
   private factoryUsed: Factory;
   private index: number;
   private apiKey: string;
   private policyId: string;
-
+  walletInfraChainConfig?: CustomChainConfig;
+  walletInfraOptions?: WalletAuthOptions;
+  optionsLike: SdkOptions;
+  walletProvider: WalletProviderLike;
+  provider: BaseWalletInfra;
   private userOpsBatch: BatchUserOpsRequest = { to: [], data: [], value: [] };
 
+  /**
+   * Creates an instance of ByzanlinkAASdk.
+   * If you want to use the sdk with a wallet provider other than Web3Auth, user has to pass the wallet provider , walletInfraChainConfig and walletInfraOptions
+   * @param {WalletProviderLike} walletProvider
+   * @param {SdkOptions} optionsLike
+   * @memberof ByzanlinkAASdk
+   */
   constructor(walletProvider: WalletProviderLike, optionsLike: SdkOptions) {
+    this.walletProvider = walletProvider;
+    this.optionsLike = optionsLike;
+  }
+  
+  /**
+   * This function initializes the sdk with the wallet infra provider
+   * Current supported providers are Web3Auth in which JWT Authentication is supported with Web3Auth
+   * @memberof ByzanlinkAASdk
+   */
+  async initAuth() {
 
-    let walletConnectProvider;
-    if (isWalletConnectProvider(walletProvider)) {
-      walletConnectProvider = new WalletConnect2WalletProvider(walletProvider as EthereumProvider);
-    } else if (!isWalletProvider(walletProvider)) {
+    if (this.optionsLike.walletProvider && this.optionsLike.walletInfraChainConfig && this.optionsLike.walletInfraOptions) {
+      this.provider = ProviderFactory.getProvider(this.optionsLike.walletProvider);
+       await this.provider.init(this.optionsLike.walletInfraChainConfig, this.optionsLike.walletInfraOptions, this.optionsLike.jwtLoginParams);
+       await this.provider.login();
+      let evmProvider  = this.provider.getEthereumProvider();
+      if(evmProvider){
+        this.walletProvider = await Web3WalletProvider.connect(evmProvider);
+        return this.walletProvider;
+      }
+    }
+  }
+
+  /**
+   * This Funtion is used to initialize the sdk with the wallet provider
+   * This will Instanstiate the wallet provider and connect to Byzanlink Wallet
+   *
+   * @memberof ByzanlinkAASdk
+   */
+  initSmartAccount(walletProvider?: WalletProviderLike) {
+    let walletConnectProvider:any;
+
+    if(walletProvider){
+      this.walletProvider = walletProvider;
+    }
+    console.log(this.walletProvider);
+    if (isWalletConnectProvider(this.walletProvider)) {
+      walletConnectProvider = new WalletConnect2WalletProvider(this.walletProvider as EthereumProvider);
+    } else if (!isWalletProvider(this.walletProvider)) {
       throw new Exception('Invalid wallet provider');
     }
 
@@ -53,23 +103,25 @@ export class ByzanlinkAASdk {
       accountAddress,
       apiKey,
       policyId,
-    } = optionsLike;
+    } = this.optionsLike;
 
     this.chainId = chainId;
     this.index = index ?? 0;
     this.apiKey = apiKey;
     this.policyId = policyId;
-    if (!optionsLike.bundlerProvider) {
-      optionsLike.bundlerProvider = new ByzanlinkBundler(chainId,apiKey,rpcProviderUrl);
+    this.walletInfraChainConfig = this.optionsLike.walletInfraChainConfig;
+    this.walletInfraOptions = this.optionsLike.walletInfraOptions;
+    if (!this.optionsLike.bundlerProvider) {
+      this.optionsLike.bundlerProvider = new ByzanlinkBundler(chainId, apiKey, rpcProviderUrl);
     }
 
-    this.factoryUsed = optionsLike.factoryWallet ?? Factory.BYZANLINK;
+    this.factoryUsed = this.optionsLike.factoryWallet ?? Factory.BYZANLINK;
 
     let provider;
 
     if (rpcProviderUrl) {
       provider = new providers.JsonRpcProvider(rpcProviderUrl);
-    } else provider = new providers.JsonRpcProvider(optionsLike.bundlerProvider.url);
+    } else provider = new providers.JsonRpcProvider(this.optionsLike.bundlerProvider.url);
 
     let entryPointAddress = '', walletFactoryAddress = '';
     if (Networks[chainId]) {
@@ -78,8 +130,8 @@ export class ByzanlinkAASdk {
       walletFactoryAddress = Networks[chainId].contracts.walletFactory[this.factoryUsed];
     }
 
-    if (optionsLike.entryPointAddress) entryPointAddress = optionsLike.entryPointAddress;
-    if (optionsLike.walletFactoryAddress) walletFactoryAddress = optionsLike.walletFactoryAddress;
+    if (this.optionsLike.entryPointAddress) entryPointAddress = this.optionsLike.entryPointAddress;
+    if (this.optionsLike.walletFactoryAddress) walletFactoryAddress = this.optionsLike.walletFactoryAddress;
 
     if (entryPointAddress == '') throw new Exception('entryPointAddress not set on the given chain_id')
     if (walletFactoryAddress == '') throw new Exception('walletFactoryAddress not set on the given chain_id')
@@ -87,17 +139,17 @@ export class ByzanlinkAASdk {
 
     this.byzanlinkWallet = new ByzanlinkWalletAPI({
       provider,
-      walletProvider: walletConnectProvider ?? walletProvider,
-      optionsLike,
+      walletProvider: walletConnectProvider ?? this.walletProvider,
+      optionsLike: this.optionsLike,
       entryPointAddress,
       factoryAddress: walletFactoryAddress,
       predefinedAccountAddress: accountAddress,
       index: this.index,
     })
 
-    this.bundler = new HttpRpcClient(optionsLike.bundlerProvider.url, entryPointAddress, chainId);
-
+    this.bundler = new HttpRpcClient(this.optionsLike.bundlerProvider.url, entryPointAddress, chainId);
   }
+
 
 
   // exposes
