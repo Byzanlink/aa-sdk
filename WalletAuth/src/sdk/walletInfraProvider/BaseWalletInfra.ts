@@ -1,7 +1,6 @@
 import { Web3AuthMPCCoreKit } from "@web3auth/mpc-core-kit";
 import { CustomChainConfig } from "./ChainInterface";
 import { JWTLoginParams, WalletAuthOptions } from "./interfaces";
-import { Web3Auth } from "./Web3Auth/Web3Auth";
 
 /**
  * Abstract class for Wallet Infra Provider

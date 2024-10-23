@@ -19,10 +19,7 @@ import { TransactionDetailsForUserOp, TransactionGasInfoForUserOp } from './base
 import { OnRamperDto, SignMessageDto, validateDto } from './dto';
 import { ErrorHandler } from './errorHandler/errorHandler.service';
 import { ByzanlinkBundler } from './bundler';
-import { CustomChainConfig } from './walletInfraProvider/ChainInterface';
-import { WalletAuthOptions } from './walletInfraProvider/interfaces';
-import { ProviderFactory } from './walletInfraProvider/WalletInfraFactory';
-import { BaseWalletInfra } from './walletInfraProvider/BaseWalletInfra';
+
 
 /**
  *
@@ -39,16 +36,15 @@ export class ByzanlinkAASdk {
   private index: number;
   private apiKey: string;
   private policyId: string;
-  walletInfraChainConfig?: CustomChainConfig;
-  walletInfraOptions?: WalletAuthOptions;
   optionsLike: SdkOptions;
   walletProvider: WalletProviderLike;
-  provider: BaseWalletInfra;
   private userOpsBatch: BatchUserOpsRequest = { to: [], data: [], value: [] };
 
   /**
    * Creates an instance of ByzanlinkAASdk.
    * If you want to use the sdk with a wallet provider other than Web3Auth, user has to pass the wallet provider , walletInfraChainConfig and walletInfraOptions
+   * This Funtion is used to initialize the sdk with the wallet provider
+   * This will Instanstiate the wallet provider and connect to Byzanlink Wallet
    * @param {WalletProviderLike} walletProvider
    * @param {SdkOptions} optionsLike
    * @memberof ByzanlinkAASdk
@@ -56,40 +52,9 @@ export class ByzanlinkAASdk {
   constructor(walletProvider: WalletProviderLike, optionsLike: SdkOptions) {
     this.walletProvider = walletProvider;
     this.optionsLike = optionsLike;
-  }
-  
-  /**
-   * This function initializes the sdk with the wallet infra provider
-   * Current supported providers are Web3Auth in which JWT Authentication is supported with Web3Auth
-   * @memberof ByzanlinkAASdk
-   */
-  async initAuth() {
-
-    if (this.optionsLike.walletProvider && this.optionsLike.walletInfraChainConfig && this.optionsLike.walletInfraOptions) {
-      this.provider = ProviderFactory.getProvider(this.optionsLike.walletProvider);
-       await this.provider.init(this.optionsLike.walletInfraChainConfig, this.optionsLike.walletInfraOptions, this.optionsLike.jwtLoginParams);
-       await this.provider.login();
-      let evmProvider  = this.provider.getEthereumProvider();
-      if(evmProvider){
-        this.walletProvider = await Web3WalletProvider.connect(evmProvider);
-        return this.walletProvider;
-      }
-    }
-  }
-
-  /**
-   * This Funtion is used to initialize the sdk with the wallet provider
-   * This will Instanstiate the wallet provider and connect to Byzanlink Wallet
-   *
-   * @memberof ByzanlinkAASdk
-   */
-  initSmartAccount(walletProvider?: WalletProviderLike) {
+    
     let walletConnectProvider:any;
 
-    if(walletProvider){
-      this.walletProvider = walletProvider;
-    }
-    console.log(this.walletProvider);
     if (isWalletConnectProvider(this.walletProvider)) {
       walletConnectProvider = new WalletConnect2WalletProvider(this.walletProvider as EthereumProvider);
     } else if (!isWalletProvider(this.walletProvider)) {
@@ -109,8 +74,7 @@ export class ByzanlinkAASdk {
     this.index = index ?? 0;
     this.apiKey = apiKey;
     this.policyId = policyId;
-    this.walletInfraChainConfig = this.optionsLike.walletInfraChainConfig;
-    this.walletInfraOptions = this.optionsLike.walletInfraOptions;
+
     if (!this.optionsLike.bundlerProvider) {
       this.optionsLike.bundlerProvider = new ByzanlinkBundler(chainId, apiKey, rpcProviderUrl);
     }
@@ -148,6 +112,22 @@ export class ByzanlinkAASdk {
     })
 
     this.bundler = new HttpRpcClient(this.optionsLike.bundlerProvider.url, entryPointAddress, chainId);
+  }
+  
+ 
+
+  /**
+
+   *
+   * @memberof ByzanlinkAASdk
+   */
+  initSmartAccount(walletProvider?: WalletProviderLike) {
+
+    if(walletProvider){
+      this.walletProvider = walletProvider;
+    }
+    console.log(this.walletProvider);
+   
   }
 
 

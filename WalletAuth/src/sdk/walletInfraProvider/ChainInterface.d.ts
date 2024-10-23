@@ -1,17 +1,17 @@
-export declare const CHAIN_NAMESPACES: {
-    readonly EIP155: "eip155";
-    readonly SOLANA: "solana";
-    readonly CASPER: "casper";
-    readonly XRPL: "xrpl";
-    readonly OTHER: "other";
+export  declare const CHAIN_NAMESPACES: {
+     EIP155: "eip155",
+     SOLANA: "solana",
+     CASPER: "casper",
+     XRPL: "xrpl",
+     OTHER: "other",
 };
 export type ChainNamespaceType = (typeof CHAIN_NAMESPACES)[keyof typeof CHAIN_NAMESPACES];
-export declare const ADAPTER_NAMESPACES: {
-    readonly EIP155: "eip155";
-    readonly SOLANA: "solana";
-    readonly CASPER: "casper";
-    readonly XRPL: "xrpl";
-    readonly MULTICHAIN: "multichain";
+export  declare const ADAPTER_NAMESPACES: {
+     EIP155: "eip155",
+     SOLANA: "solana",
+     CASPER: "casper",
+     XRPL: "xrpl",
+     MULTICHAIN: "multichain",
 };
 export type AdapterNamespaceType = (typeof ADAPTER_NAMESPACES)[keyof typeof ADAPTER_NAMESPACES];
 export type CustomChainConfig = {

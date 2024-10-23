@@ -28,6 +28,14 @@ export declare const ERRORS: {
     INVALID_BACKUP_SHARE: string;
 };
 export declare const SOCIAL_FACTOR_INDEX = 1;
+
+export   const CHAIN_NAMESPACE= {
+    EIP155: "eip155",
+    SOLANA: "solana",
+    CASPER: "casper",
+    XRPL: "xrpl",
+    OTHER: "other",
+};
 /**
  * Defines the TSS Share Index in a simplified way for better implementation.
  **/

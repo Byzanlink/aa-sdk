@@ -15,7 +15,6 @@ import { EthereumSigningProvider } from '@web3auth/ethereum-mpc-provider';
 import { CHAIN_NAMESPACES, IProvider } from "@web3auth/base";
 // IMP END - Quick Start
 import { BN } from "bn.js";
-import { tssLib } from "@toruslabs/tss-dkls-lib";
 import { CustomChainConfig } from '../ChainInterface';
 import { JWTLoginParams, WalletAuthOptions, OAuthLoginParams } from '../interfaces';
 
@@ -91,9 +90,10 @@ async init(customChainConfig: CustomChainConfig, web3options: WalletAuthOptions,
     this.web3AuthCoreKit = new Web3AuthMPCCoreKit({
       web3AuthClientId: this.web3options.web3AuthClientId,
       web3AuthNetwork: this.web3options.web3AuthNetwork,
-      storage: window.localStorage,
+      storage: this.web3options.storage,
       tssLib: this.web3options.tssLib,
-      manualSync:this.web3options.manualSync
+      manualSync:this.web3options.manualSync,
+      uxMode:this.web3options.uxMode
     });
      await this.web3AuthCoreKit.init();
     console.log("Web3AuthCoreKit initialized");
@@ -165,7 +165,7 @@ async login(): Promise<Web3AuthMPCCoreKit> {
  * @param {*} coreKitInstance
  * @memberof Web3Auth
  */
-criticalResetAccount = async (coreKitInstance): Promise<void> => {
+protected criticalResetAccount = async (coreKitInstance): Promise<void> => {
     // This is a critical function that should only be used for testing purposes
     // Resetting your account means clearing all the metadata associated with it from the metadata server
     // The key details will be deleted from our server and you will not be able to recover your account
