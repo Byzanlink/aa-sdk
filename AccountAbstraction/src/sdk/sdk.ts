@@ -76,7 +76,7 @@ export class ByzanlinkAASdk {
     this.policyId = policyId;
 
     if (!this.optionsLike.bundlerProvider) {
-      this.optionsLike.bundlerProvider = new ByzanlinkBundler(chainId, apiKey, rpcProviderUrl);
+      this.optionsLike.bundlerProvider = new ByzanlinkBundler(chainId, apiKey, rpcProviderUrl,policyId);
     }
 
     this.factoryUsed = this.optionsLike.factoryWallet ?? Factory.BYZANLINK;
@@ -126,7 +126,6 @@ export class ByzanlinkAASdk {
     if(walletProvider){
       this.walletProvider = walletProvider;
     }
-    console.log(this.walletProvider);
    
   }
 
@@ -204,6 +203,7 @@ export class ByzanlinkAASdk {
     }
 
     const gasInfo = await this.getGasFee()
+
 
     const partialtx = await this.byzanlinkWallet.createUnsignedUserOp({
       ...tx,

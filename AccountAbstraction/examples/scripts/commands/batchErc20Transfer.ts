@@ -20,7 +20,7 @@ export default async function main(
   const byzanlinkAASdk = new ByzanlinkAASdk({ privateKey: config.signingKey }, { chainId: config.chainId })
 
   const address = await byzanlinkAASdk.getCounterFactualAddress();
-  console.log(`Etherspot address: ${address}`)
+  console.log(`Byzanlink address: ${address}`)
 
   const provider = new ethers.providers.JsonRpcProvider(config.rpcProviderUrl);
   const token = ethers.utils.getAddress(tkn);

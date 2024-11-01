@@ -7,7 +7,8 @@ export class ByzanlinkBundler implements BundlerProvider {
   readonly apiKey: string;
   readonly chainId: string;
 
-  constructor(chainId: number, apiKey?: string, bundlerUrl?: string) {
+
+  constructor(chainId: number, apiKey?: string, bundlerUrl?: string,policyId?: string) {
     if (!bundlerUrl) {
       const networkConfig = getNetworkConfig(chainId);
       if (!networkConfig || networkConfig.bundler == '') throw new Exception('No bundler url provided')
@@ -18,6 +19,11 @@ export class ByzanlinkBundler implements BundlerProvider {
       else this.url = bundlerUrl + '?apiKey=' + apiKey;
     }
     else this.url = bundlerUrl;
+
+    if (policyId) {
+      this.url = this.url + '&policyId=' + policyId;
+    }
+
     this.apiKey = apiKey;
   }
 }
