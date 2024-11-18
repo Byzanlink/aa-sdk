@@ -1,6 +1,6 @@
 {
   "name": "@byzanlink/aa-sdk",
-  "version": "1.0.50",
+  "version": "1.0.0",
   "description": "Byzanlink (Account Abstraction) SDK",
   "keywords": [
     "ether",

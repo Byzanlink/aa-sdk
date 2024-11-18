@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">Byzanlink AA SDK</h1>
+  <h1 align="center">Byzanlink AA Wallet SDK</h1>
 </div>
 
 <div align="center">

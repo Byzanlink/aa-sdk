@@ -1,6 +1,6 @@
 {
     "name": "@byzanlink/aa-wallet-auth",
-    "version": "1.0.19",
+    "version": "1.0.0",
     "description": "Byzanlink (Account Abstraction) Wallet Auth SDK",
     "keywords": [
         "ether",
