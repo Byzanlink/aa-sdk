@@ -1,0 +1,90 @@
+import { ethers,BigNumber } from 'ethers';
+import { ByzanlinkBundler, ByzanlinkAASdk } from '../src';
+import { printOp } from '../src/sdk/common/OperationUtils';
+import * as dotenv from 'dotenv';
+import { sleep } from '../src/sdk/common';
+
+dotenv.config();
+
+const recipient = '0x13dBB7A7e1bBAFf1894cfbeb1382043060a220cb'; // recipient wallet address
+const value = '0.0001'; // transfer value
+const bundlerApiKey = '8aee100f5be54e648887c8c1b31944f9';
+
+
+
+
+async function main() {
+  // initializating sdk...
+  const byzanlinkAASdk = new ByzanlinkAASdk({ privateKey: process.env.WALLET_PRIVATE_KEY }, { chainId: Number(process.env.CHAIN_ID), bundlerProvider: new ByzanlinkBundler(Number(process.env.CHAIN_ID), bundlerApiKey) })
+  const totalGasNeeded = (0xb6c8+ (3*0xf2b5)+0xc909)*0x59682f0f;
+  const totalGasNeeded1 = (0xb6c8+ (0xf2b5)+0xc909)*0x59682f0f;
+  const totalGasNeeded2 = (0xb6c8+ (3*0xf2b5)+0xc909);
+  const totalGasNeeded3 = (0xb6c8+ (0xf2b5)+0xc909);
+const gasused = 0x1dac1 * 0x59682f0f;
+console.log('amoy gas');
+
+console.log(ethers.utils.formatEther('0x023012a1'));
+console.log(ethers.utils.formatEther('0x01000000000001905b'));
+console.log(ethers.utils.formatEther('0x022f0498'));
+
+// Convert to human-readable price by dividing by 10^8
+const answer = BigNumber.from('0x022d6f20'); // Replace with your actual 'answer'
+
+const price = ethers.utils.formatUnits(answer, 8);
+
+console.log(`MATIC/USD Price: ${price}`);
+
+
+  console.log(totalGasNeeded);
+  console.log(ethers.utils.formatEther(totalGasNeeded));  
+  console.log(ethers.utils.formatEther(totalGasNeeded1));  
+console.log(ethers.utils.formatEther(totalGasNeeded2));
+console.log(ethers.utils.formatEther(totalGasNeeded3));
+  console.log(ethers.utils.formatEther('0x75cff3440'));
+  console.log(ethers.utils.formatEther(gasused));
+  //0.00042698400426984
+  //0.000182305501823055
+  //0.00024058500240585
+
+  // get transaction hash...
+  console.log('Waiting for transaction...');
+  console.log(ethers.utils.formatEther('0x052b391e00'));
+  console.log(ethers.utils.formatEther('0x06c67ec300'));
+  console.log(ethers.utils.formatEther('0x861c46800'));
+  console.log(ethers.utils.formatEther('0x060cb51dcb'));
+  console.log((0.000000000000047599+0.000000000000302309+0.000000000000051976)*0.00000000150000003)
+
+  console.log('0.0000000000001');
+
+  console.log(ethers.utils.parseEther('0.0000000026'));
+  console.log(ethers.utils.parseEther('0.00000000001'));
+  console.log(ethers.utils.parseEther('0.00000000001'));
+
+  let uoHash = "0xda1b935147b1ad8e15612cd72fb74859ae26bcf04e0a9863f4dcb7b2554dd81b";
+  const errorData = "0x1fad948c00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000266c5192ff26cda6697e0f86bd42c002ee68c8e00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000f3dc1f8b4aae5fff1999a8e352a8f5b5742f972b000000000000000000000000000000000000000000000000000000000000002700000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000000000000b9ef000000000000000000000000000000000000000000000000000000000000e6d4000000000000000000000000000000000000000000000000000000000000b5540000000000000000000000000000000000000000000000000000000059682f1e0000000000000000000000000000000000000000000000000000000059682f00000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000014447e1da2a000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000080a1874e1046b1cc5defdf4d3153838b72ff94ac0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000957c072cd1a24ccc0c56625d73a21173c65630e6f50000000000000000000000000000000000000000000000000000000066bf386a0000000000000000000000000000000000000000000000000000000066bf35d6e0cab1b55ebf63ad3ce2dd33fb14da1b85f943d3a22635894d4cf7a99d98ff91182a74039f60f7a2227427bd2a716b67d34550ec73caedeecc878ed9982d21491b00000000000000000000000000000000000000000000000000000000000000000000000000000000000041069163b7ad2000affbc92158dcc35ee9190aa79ad07c4fb9298b97a672ede04b2c3469b63685054b5d934c86f15641bde3c832f93c0b10039f9803c8cf9c41351c00000000000000000000000000000000000000000000000000000000000000";
+
+const abi = new ethers.utils.AbiCoder();
+
+
+
+  
+  let userOpsReceipt = null;
+  const timeout = Date.now() + 60000; // 1 minute timeout
+  const PaymasterBalanceAfter  = await byzanlinkAASdk.getPaymasterBalance('0x967aAA81553E5f2229aA91cd9EDD3CD630d27483');
+  console.log('\x1b[33m%s\x1b[0m', `Total Estimation Gas  After paymaster Signing: `, ethers.utils.formatEther(PaymasterBalanceAfter));
+  
+  while((userOpsReceipt == null) && (Date.now() < timeout)) {
+    await sleep(2);
+    userOpsReceipt = await byzanlinkAASdk.getUserOpReceipt(uoHash);
+    console.log("Waiting for User op receipt");
+  }
+
+  const PaymasterBalanceAfter1  = await byzanlinkAASdk.getPaymasterBalance('0x967aAA81553E5f2229aA91cd9EDD3CD630d27483');
+    console.log('\x1b[33m%s\x1b[0m', `Total Estimation Gas  After paymaster Signing: `, ethers.utils.formatEther(PaymasterBalanceAfter1));
+    
+  console.log('\x1b[33m%s\x1b[0m', `Transaction Receipt: `, userOpsReceipt);
+}
+
+main()
+  .catch(console.error)
+  .finally(() => process.exit());

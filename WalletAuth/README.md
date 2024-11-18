@@ -5,7 +5,7 @@
 <div align="center">
   <p>
     <b>
-      Byzanlink AA is a ERC-4337 compliant Account Abstraction SDK 
+      Byzanlink AA Auth is build on Top of MPC Core kit with Web3 Auth 
     </b>
    </p>
 </div>
@@ -15,16 +15,16 @@
 
 ## Byzanlink AA
 
-Byzanlink AA is a fully open source SDK which let's dapp developers easily get building with Account Abstraction.
+Byzanlink AA Auth is a web3 authentication solution that allows users to authenticate with social logins and web3 wallets. It is built on top of [MPC Core kit].
 
-The SDK makes it incredibly easy to get up and running with Account Abstraction. From social logins to transaction batching, using an Byzanlink smart wallet can give your dapp a web2 like interface to ensure the user has a seamless experience.
+The SDK makes it incredibly easy to get up and running with web3 Auth JWT based login. Using this output, you can easily integrate Byzanlink AA SDK and get started with Byzanlink Smart Account
 
 ## ⚙ Get started
 
 You can either get started by installing the packages yourself here:
 
 ```bash
-npm i @byzanlink/aa-sdk
+npm i @byzanlink/aa-wallet-auth
 ```
 
 
