@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">Byzanlink AA Wallet SDK</h1>
+  <h1 align="center">Byzanlink AA Auth SDK</h1>
 </div>
 
 <div align="center">
@@ -24,7 +24,7 @@ The SDK makes it incredibly easy to get up and running with web3 Auth JWT based 
 You can either get started by installing the packages yourself here:
 
 ```bash
-npm i @byzanlink/aa-wallet-auth
+npm i @byzanlink-tech/aa-wallet-auth
 ```
 
 

@@ -24,7 +24,7 @@ The SDK makes it incredibly easy to get up and running with Account Abstraction.
 You can either get started by installing the packages yourself here:
 
 ```bash
-npm i @byzanlink/aa-sdk
+npm i @byzanlink-tech/aa-sdk
 ```
 
 

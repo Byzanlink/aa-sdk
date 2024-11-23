@@ -85,7 +85,6 @@ async init(customChainConfig: CustomChainConfig, web3options: WalletAuthOptions,
     this.customChainConfig = customChainConfig;
     this.jwtLoginParams = jwtLoginParams;
     this.web3options = web3options;
-    console.log("Web3AuthCoreKit before initialized");
 
     this.web3AuthCoreKit = new Web3AuthMPCCoreKit({
       web3AuthClientId: this.web3options.web3AuthClientId,
@@ -114,15 +113,12 @@ async login(): Promise<Web3AuthMPCCoreKit> {
       subVerifier: this.jwtLoginParams.subVerifier,
 
     }
-    console.log("JWT Params", JSON.stringify(jwtLoginParams));
     try{
-      console.log("Before login status", this.web3AuthCoreKit.status);
     
       if(this.web3AuthCoreKit.status !== COREKIT_STATUS.LOGGED_IN){ 
         await this.web3AuthCoreKit.loginWithJWT(jwtLoginParams);
       }
     
-    console.log("After login status", this.web3AuthCoreKit.status);
    
     if(this.web3AuthCoreKit.status === COREKIT_STATUS.LOGGED_IN){ 
       await this.web3AuthCoreKit.commitChanges();
@@ -132,7 +128,7 @@ async login(): Promise<Web3AuthMPCCoreKit> {
 
     }
 
-    console.log("Login Success");
+    console.log("Web3AuthCoreKit Login Success");
     return this.web3AuthCoreKit;
   }
   catch(e){
@@ -148,8 +144,6 @@ async login(): Promise<Web3AuthMPCCoreKit> {
    * @memberof Web3Auth
    */
   getEthereumProvider(): EthereumSigningProvider {
-    console.log("getEthereumProvider");
-    console.log("this.web3AuthCoreKit.status", this.web3AuthCoreKit.status);
     if (this.web3AuthCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
       const evmProvider = new EthereumSigningProvider({ config: { chainConfig: this.customChainConfig } });
       evmProvider.setupProvider(makeEthereumSigner(this.web3AuthCoreKit));
