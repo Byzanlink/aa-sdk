@@ -3,7 +3,8 @@
     "private": true,
     "workspaces": [
         "WalletAuth",
-        "AccountAbstraction"
+        "AccountAbstraction",
+        "Passkeys"
     ],
     "dependencies": {
         "jwt-decode": "^4.0.0"

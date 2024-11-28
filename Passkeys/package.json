@@ -1,0 +1,76 @@
+{
+    "name": "@byzanlink-legacy/aa-passkey-validator",
+    "version": "1.0.38",
+    "description": "Byzanlink (Account Abstraction) Passkey Auth SDK",
+    "keywords": [
+        "ether",
+        "ethereum",
+        "sdk",
+        "layer2",
+        "blockchain",
+        "account abstraction",
+        "4337",
+        "byzanlink",
+        "auth",
+        "passkey",
+        "byzanlink-passkeys"
+    ],
+    "license": "MIT",
+    "private": false,
+    "homepage": "https://byzanlink.com",
+    "main": "./dist/node.js",
+    "browser": {
+        "./dist/browser.js": "./dist/browser.js",
+        "child_process": false
+    },
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/",
+        "src/"
+    ],
+    "scripts": {
+        "format": "prettier --write \"{src,test,examples}/**/*.ts\"",
+        "lint": "eslint \"{src,test,examples}/**/*.ts\"",
+        "lint-fix": "npm run lint -- --fix",
+        "prebuild": "rimraf ./dist",
+        "build": "npm run compile",
+        "compile": "tsc -p ./tsconfig.build.json",
+        "compile-watch": "npm run compile -- --watch",
+        "init": "ts-node examples/scripts/init.ts",
+        "command": "ts-node examples/scripts/commands/index.ts",
+        "predocs:build": "rimraf ./docs",
+        "docs:build": "typedoc ./src",
+        "postdocs:build": "cp -r ./.github-pages/files/* ./docs && date > ./docs/.nojekyll",
+        "docs:deploy": "gh-pages -d ./docs -b master -r git@github.com:etherspot/sdk.etherspot.io.git"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Byzanlink/aa-sdk.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Byzanlink/aa-sdk/issues"
+    },
+    "dependencies": {
+        "@simplewebauthn/browser": "11.0.0",
+        "ethers": "5.7.2",
+        "prettier": "2.8.8"
+    },
+    "devDependencies": {
+        "@types/node": "18.11.9",
+        "@types/prettier": "2.7.3",
+        "@types/qs": "6.9.12",
+        "@typescript-eslint/eslint-plugin": "5.45.0",
+        "@typescript-eslint/parser": "5.45.0",
+        "dotenv": "16.0.3",
+        "eslint": "8.28.0",
+        "eslint-config-prettier": "8.5.0",
+        "eslint-plugin-prettier": "4.2.1",
+        "npm": "9.6.4",
+        "ts-node": "^10.9.1",
+        "typedoc": "^0.17.8",
+        "typescript": "4.9.5"
+    },
+    "peerDependencies": {
+        "axios": "^1.7.8"
+    }
+}
