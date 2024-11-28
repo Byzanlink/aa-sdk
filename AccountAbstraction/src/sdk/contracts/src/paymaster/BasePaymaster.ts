@@ -28,30 +28,26 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
-export type UserOperationStruct = {
+export type PackedUserOperationStruct = {
   sender: PromiseOrValue<string>;
   nonce: PromiseOrValue<BigNumberish>;
   initCode: PromiseOrValue<BytesLike>;
   callData: PromiseOrValue<BytesLike>;
-  callGasLimit: PromiseOrValue<BigNumberish>;
-  verificationGasLimit: PromiseOrValue<BigNumberish>;
+  accountGasLimits: PromiseOrValue<BytesLike>;
   preVerificationGas: PromiseOrValue<BigNumberish>;
-  maxFeePerGas: PromiseOrValue<BigNumberish>;
-  maxPriorityFeePerGas: PromiseOrValue<BigNumberish>;
+  gasFees: PromiseOrValue<BytesLike>;
   paymasterAndData: PromiseOrValue<BytesLike>;
   signature: PromiseOrValue<BytesLike>;
 };
 
-export type UserOperationStructOutput = [
+export type PackedUserOperationStructOutput = [
   string,
   BigNumber,
   string,
   string,
+  string,
   BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
+  string,
   string,
   string
 ] & {
@@ -59,11 +55,9 @@ export type UserOperationStructOutput = [
   nonce: BigNumber;
   initCode: string;
   callData: string;
-  callGasLimit: BigNumber;
-  verificationGasLimit: BigNumber;
+  accountGasLimits: string;
   preVerificationGas: BigNumber;
-  maxFeePerGas: BigNumber;
-  maxPriorityFeePerGas: BigNumber;
+  gasFees: string;
   paymasterAndData: string;
   signature: string;
 };
@@ -74,11 +68,11 @@ export interface BasePaymasterInterface extends utils.Interface {
     "entryPoint()": FunctionFragment;
     "getDeposit()": FunctionFragment;
     "owner()": FunctionFragment;
-    "postOp(uint8,bytes,uint256)": FunctionFragment;
+    "postOp(uint8,bytes,uint256,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unlockStake()": FunctionFragment;
-    "validatePaymasterUserOp((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes),bytes32,uint256)": FunctionFragment;
+    "validatePaymasterUserOp((address,uint256,bytes,bytes,bytes32,uint256,bytes32,bytes,bytes),bytes32,uint256)": FunctionFragment;
     "withdrawStake(address)": FunctionFragment;
   };
 
@@ -114,6 +108,7 @@ export interface BasePaymasterInterface extends utils.Interface {
     values: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -132,7 +127,7 @@ export interface BasePaymasterInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "validatePaymasterUserOp",
     values: [
-      UserOperationStruct,
+      PackedUserOperationStruct,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BigNumberish>
     ]
@@ -229,6 +224,7 @@ export interface BasePaymaster extends BaseContract {
       mode: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BytesLike>,
       actualGasCost: PromiseOrValue<BigNumberish>,
+      actualUserOpFeePerGas: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -246,7 +242,7 @@ export interface BasePaymaster extends BaseContract {
     ): Promise<ContractTransaction>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -273,6 +269,7 @@ export interface BasePaymaster extends BaseContract {
     mode: PromiseOrValue<BigNumberish>,
     context: PromiseOrValue<BytesLike>,
     actualGasCost: PromiseOrValue<BigNumberish>,
+    actualUserOpFeePerGas: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -290,7 +287,7 @@ export interface BasePaymaster extends BaseContract {
   ): Promise<ContractTransaction>;
 
   validatePaymasterUserOp(
-    userOp: UserOperationStruct,
+    userOp: PackedUserOperationStruct,
     userOpHash: PromiseOrValue<BytesLike>,
     maxCost: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -317,6 +314,7 @@ export interface BasePaymaster extends BaseContract {
       mode: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BytesLike>,
       actualGasCost: PromiseOrValue<BigNumberish>,
+      actualUserOpFeePerGas: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -330,7 +328,7 @@ export interface BasePaymaster extends BaseContract {
     unlockStake(overrides?: CallOverrides): Promise<void>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -371,6 +369,7 @@ export interface BasePaymaster extends BaseContract {
       mode: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BytesLike>,
       actualGasCost: PromiseOrValue<BigNumberish>,
+      actualUserOpFeePerGas: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -388,7 +387,7 @@ export interface BasePaymaster extends BaseContract {
     ): Promise<BigNumber>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -416,6 +415,7 @@ export interface BasePaymaster extends BaseContract {
       mode: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BytesLike>,
       actualGasCost: PromiseOrValue<BigNumberish>,
+      actualUserOpFeePerGas: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -433,7 +433,7 @@ export interface BasePaymaster extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }

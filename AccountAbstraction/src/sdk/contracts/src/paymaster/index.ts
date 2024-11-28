@@ -2,5 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { BasePaymaster } from "./BasePaymaster";
-export type { EtherspotPaymaster } from "./EtherspotPaymaster";
+export type { ByzanlinkPaymaster } from "./ByzanlinkPaymaster";
 export type { Whitelist } from "./Whitelist";

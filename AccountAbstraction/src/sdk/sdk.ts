@@ -5,8 +5,7 @@ import {
   isWalletConnectProvider,
   isWalletProvider,
   WalletConnect2WalletProvider,
-  WalletProviderLike,
-  Web3WalletProvider
+  WalletProviderLike
 } from './wallet';
 import { Factory, PaymasterApi, SdkOptions } from './interfaces';
 import { Network } from "./network";
@@ -52,7 +51,7 @@ export class ByzanlinkAASdk {
   constructor(walletProvider: WalletProviderLike, optionsLike: SdkOptions) {
     this.walletProvider = walletProvider;
     this.optionsLike = optionsLike;
-    
+
     let walletConnectProvider:any;
 
     if (isWalletConnectProvider(this.walletProvider)) {
@@ -113,8 +112,8 @@ export class ByzanlinkAASdk {
 
     this.bundler = new HttpRpcClient(this.optionsLike.bundlerProvider.url, entryPointAddress, chainId);
   }
-  
- 
+
+
 
   /**
 
@@ -126,7 +125,7 @@ export class ByzanlinkAASdk {
     if(walletProvider){
       this.walletProvider = walletProvider;
     }
-   
+
   }
 
 
@@ -185,6 +184,9 @@ export class ByzanlinkAASdk {
     const { paymasterDetails, gasDetails, callGasLimit, key } = params;
     let dummySignature = "0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c";
 
+    if(this.byzanlinkWallet?.services?.stateService?.wallet?.providerType === 'Passkey'){
+      dummySignature =  "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000001406aa3d9d976d73168d12d196310eff8e9e0e8fee715237bf3d2f0c75f14938f6af81bb36e838b7571dede4afeb40469513e8fdd2e4109714ed830cd962a4b640000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002549960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d97631d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000867b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22465678414c4570685835433463484650537a44474d305571722d78647648424d6971366d42725066583049222c226f726967696e223a22687474703a2f2f6c6f63616c686f73743a33303030222c2263726f73734f726967696e223a66616c73657d0000000000000000000000000000000000000000000000000000";
+    }
     if (this.userOpsBatch.to.length < 1) {
       throw new ErrorHandler('cannot sign empty transaction batch', 1);
     }

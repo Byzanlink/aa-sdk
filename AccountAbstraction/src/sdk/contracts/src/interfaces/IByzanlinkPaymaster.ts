@@ -28,30 +28,26 @@ import type {
   PromiseOrValue,
 } from "../../common";
 
-export type UserOperationStruct = {
+export type PackedUserOperationStruct = {
   sender: PromiseOrValue<string>;
   nonce: PromiseOrValue<BigNumberish>;
   initCode: PromiseOrValue<BytesLike>;
   callData: PromiseOrValue<BytesLike>;
-  callGasLimit: PromiseOrValue<BigNumberish>;
-  verificationGasLimit: PromiseOrValue<BigNumberish>;
+  accountGasLimits: PromiseOrValue<BytesLike>;
   preVerificationGas: PromiseOrValue<BigNumberish>;
-  maxFeePerGas: PromiseOrValue<BigNumberish>;
-  maxPriorityFeePerGas: PromiseOrValue<BigNumberish>;
+  gasFees: PromiseOrValue<BytesLike>;
   paymasterAndData: PromiseOrValue<BytesLike>;
   signature: PromiseOrValue<BytesLike>;
 };
 
-export type UserOperationStructOutput = [
+export type PackedUserOperationStructOutput = [
   string,
   BigNumber,
   string,
   string,
+  string,
   BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
+  string,
   string,
   string
 ] & {
@@ -59,36 +55,30 @@ export type UserOperationStructOutput = [
   nonce: BigNumber;
   initCode: string;
   callData: string;
-  callGasLimit: BigNumber;
-  verificationGasLimit: BigNumber;
+  accountGasLimits: string;
   preVerificationGas: BigNumber;
-  maxFeePerGas: BigNumber;
-  maxPriorityFeePerGas: BigNumber;
+  gasFees: string;
   paymasterAndData: string;
   signature: string;
 };
 
-export interface EtherspotPaymasterInterface extends utils.Interface {
+export interface IByzanlinkPaymasterInterface extends utils.Interface {
   functions: {
     "addBatchToWhitelist(address[])": FunctionFragment;
     "addStake(uint32)": FunctionFragment;
     "addToWhitelist(address)": FunctionFragment;
     "check(address,address)": FunctionFragment;
     "depositFunds()": FunctionFragment;
-    "entryPoint()": FunctionFragment;
     "getDeposit()": FunctionFragment;
-    "getHash((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes),uint48,uint48)": FunctionFragment;
+    "getHash((address,uint256,bytes,bytes,bytes32,uint256,bytes32,bytes,bytes),uint48,uint48)": FunctionFragment;
     "getSponsorBalance(address)": FunctionFragment;
-    "owner()": FunctionFragment;
     "parsePaymasterAndData(bytes)": FunctionFragment;
     "postOp(uint8,bytes,uint256)": FunctionFragment;
     "removeBatchFromWhitelist(address[])": FunctionFragment;
     "removeFromWhitelist(address)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "unlockStake()": FunctionFragment;
-    "validatePaymasterUserOp((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes),bytes32,uint256)": FunctionFragment;
-    "withdrawFunds(uint256)": FunctionFragment;
+    "validatePaymasterUserOp((address,uint256,bytes,bytes,bytes32,uint256,bytes32,bytes,bytes),bytes32,uint256)": FunctionFragment;
+    "withdrawFunds(address,uint256)": FunctionFragment;
     "withdrawStake(address)": FunctionFragment;
   };
 
@@ -99,17 +89,13 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
       | "addToWhitelist"
       | "check"
       | "depositFunds"
-      | "entryPoint"
       | "getDeposit"
       | "getHash"
       | "getSponsorBalance"
-      | "owner"
       | "parsePaymasterAndData"
       | "postOp"
       | "removeBatchFromWhitelist"
       | "removeFromWhitelist"
-      | "renounceOwnership"
-      | "transferOwnership"
       | "unlockStake"
       | "validatePaymasterUserOp"
       | "withdrawFunds"
@@ -137,17 +123,13 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "entryPoint",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getDeposit",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getHash",
     values: [
-      UserOperationStruct,
+      PackedUserOperationStruct,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
@@ -156,7 +138,6 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
     functionFragment: "getSponsorBalance",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "parsePaymasterAndData",
     values: [PromiseOrValue<BytesLike>]
@@ -178,28 +159,20 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "unlockStake",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "validatePaymasterUserOp",
     values: [
-      UserOperationStruct,
+      PackedUserOperationStruct,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawFunds",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawStake",
@@ -220,14 +193,12 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
     functionFragment: "depositFunds",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "entryPoint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getHash", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSponsorBalance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "parsePaymasterAndData",
     data: BytesLike
@@ -239,14 +210,6 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "removeFromWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -269,7 +232,6 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
   events: {
     "AddedBatchToWhitelist(address,address[])": EventFragment;
     "AddedToWhitelist(address,address)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
     "RemovedBatchFromWhitelist(address,address[])": EventFragment;
     "RemovedFromWhitelist(address,address)": EventFragment;
     "SponsorSuccessful(address,address)": EventFragment;
@@ -277,7 +239,6 @@ export interface EtherspotPaymasterInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "AddedBatchToWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddedToWhitelist"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemovedBatchFromWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemovedFromWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SponsorSuccessful"): EventFragment;
@@ -306,18 +267,6 @@ export type AddedToWhitelistEvent = TypedEvent<
 
 export type AddedToWhitelistEventFilter =
   TypedEventFilter<AddedToWhitelistEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
-}
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface RemovedBatchFromWhitelistEventObject {
   paymaster: string;
@@ -355,12 +304,12 @@ export type SponsorSuccessfulEvent = TypedEvent<
 export type SponsorSuccessfulEventFilter =
   TypedEventFilter<SponsorSuccessfulEvent>;
 
-export interface EtherspotPaymaster extends BaseContract {
+export interface IByzanlinkPaymaster extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: EtherspotPaymasterInterface;
+  interface: IByzanlinkPaymasterInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -407,12 +356,10 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    entryPoint(overrides?: CallOverrides): Promise<[string]>;
-
     getDeposit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getHash(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       validUntil: PromiseOrValue<BigNumberish>,
       validAfter: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -422,8 +369,6 @@ export interface EtherspotPaymaster extends BaseContract {
       _sponsor: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
 
     parsePaymasterAndData(
       paymasterAndData: PromiseOrValue<BytesLike>,
@@ -453,27 +398,19 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     unlockStake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     withdrawFunds(
+      _sponsor: PromiseOrValue<string>,
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -509,12 +446,10 @@ export interface EtherspotPaymaster extends BaseContract {
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  entryPoint(overrides?: CallOverrides): Promise<string>;
-
   getDeposit(overrides?: CallOverrides): Promise<BigNumber>;
 
   getHash(
-    userOp: UserOperationStruct,
+    userOp: PackedUserOperationStruct,
     validUntil: PromiseOrValue<BigNumberish>,
     validAfter: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -524,8 +459,6 @@ export interface EtherspotPaymaster extends BaseContract {
     _sponsor: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
 
   parsePaymasterAndData(
     paymasterAndData: PromiseOrValue<BytesLike>,
@@ -555,27 +488,19 @@ export interface EtherspotPaymaster extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   unlockStake(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   validatePaymasterUserOp(
-    userOp: UserOperationStruct,
+    userOp: PackedUserOperationStruct,
     userOpHash: PromiseOrValue<BytesLike>,
     maxCost: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   withdrawFunds(
+    _sponsor: PromiseOrValue<string>,
     _amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -609,12 +534,10 @@ export interface EtherspotPaymaster extends BaseContract {
 
     depositFunds(overrides?: CallOverrides): Promise<void>;
 
-    entryPoint(overrides?: CallOverrides): Promise<string>;
-
     getDeposit(overrides?: CallOverrides): Promise<BigNumber>;
 
     getHash(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       validUntil: PromiseOrValue<BigNumberish>,
       validAfter: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -624,8 +547,6 @@ export interface EtherspotPaymaster extends BaseContract {
       _sponsor: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
 
     parsePaymasterAndData(
       paymasterAndData: PromiseOrValue<BytesLike>,
@@ -655,17 +576,10 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     unlockStake(overrides?: CallOverrides): Promise<void>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -674,6 +588,7 @@ export interface EtherspotPaymaster extends BaseContract {
     >;
 
     withdrawFunds(
+      _sponsor: PromiseOrValue<string>,
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -702,15 +617,6 @@ export interface EtherspotPaymaster extends BaseContract {
       paymaster?: PromiseOrValue<string> | null,
       account?: PromiseOrValue<string> | null
     ): AddedToWhitelistEventFilter;
-
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
 
     "RemovedBatchFromWhitelist(address,address[])"(
       paymaster?: PromiseOrValue<string> | null,
@@ -766,12 +672,10 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    entryPoint(overrides?: CallOverrides): Promise<BigNumber>;
-
     getDeposit(overrides?: CallOverrides): Promise<BigNumber>;
 
     getHash(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       validUntil: PromiseOrValue<BigNumberish>,
       validAfter: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -781,8 +685,6 @@ export interface EtherspotPaymaster extends BaseContract {
       _sponsor: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     parsePaymasterAndData(
       paymasterAndData: PromiseOrValue<BytesLike>,
@@ -806,27 +708,19 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     unlockStake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     withdrawFunds(
+      _sponsor: PromiseOrValue<string>,
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -863,12 +757,10 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    entryPoint(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getDeposit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getHash(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       validUntil: PromiseOrValue<BigNumberish>,
       validAfter: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -878,8 +770,6 @@ export interface EtherspotPaymaster extends BaseContract {
       _sponsor: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     parsePaymasterAndData(
       paymasterAndData: PromiseOrValue<BytesLike>,
@@ -903,27 +793,19 @@ export interface EtherspotPaymaster extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     unlockStake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     validatePaymasterUserOp(
-      userOp: UserOperationStruct,
+      userOp: PackedUserOperationStruct,
       userOpHash: PromiseOrValue<BytesLike>,
       maxCost: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     withdrawFunds(
+      _sponsor: PromiseOrValue<string>,
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

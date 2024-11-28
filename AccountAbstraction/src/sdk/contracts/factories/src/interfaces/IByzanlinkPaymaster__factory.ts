@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  IEtherspotPaymaster,
-  IEtherspotPaymasterInterface,
-} from "../../../src/interfaces/IEtherspotPaymaster";
+  IByzanlinkPaymaster,
+  IByzanlinkPaymasterInterface,
+} from "../../../src/interfaces/IByzanlinkPaymaster";
 
 const _abi = [
   {
@@ -213,14 +213,9 @@ const _abi = [
             type: "bytes",
           },
           {
-            internalType: "uint256",
-            name: "callGasLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "verificationGasLimit",
-            type: "uint256",
+            internalType: "bytes32",
+            name: "accountGasLimits",
+            type: "bytes32",
           },
           {
             internalType: "uint256",
@@ -228,14 +223,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "maxFeePerGas",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxPriorityFeePerGas",
-            type: "uint256",
+            internalType: "bytes32",
+            name: "gasFees",
+            type: "bytes32",
           },
           {
             internalType: "bytes",
@@ -248,7 +238,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct UserOperation",
+        internalType: "struct PackedUserOperation",
         name: "userOp",
         type: "tuple",
       },
@@ -325,7 +315,7 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "enum IEtherspotPaymaster.PostOpMode",
+        internalType: "enum IByzanlinkPaymaster.PostOpMode",
         name: "mode",
         type: "uint8",
       },
@@ -403,14 +393,9 @@ const _abi = [
             type: "bytes",
           },
           {
-            internalType: "uint256",
-            name: "callGasLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "verificationGasLimit",
-            type: "uint256",
+            internalType: "bytes32",
+            name: "accountGasLimits",
+            type: "bytes32",
           },
           {
             internalType: "uint256",
@@ -418,14 +403,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "maxFeePerGas",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxPriorityFeePerGas",
-            type: "uint256",
+            internalType: "bytes32",
+            name: "gasFees",
+            type: "bytes32",
           },
           {
             internalType: "bytes",
@@ -438,7 +418,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct UserOperation",
+        internalType: "struct PackedUserOperation",
         name: "userOp",
         type: "tuple",
       },
@@ -502,15 +482,15 @@ const _abi = [
   },
 ] as const;
 
-export class IEtherspotPaymaster__factory {
+export class IByzanlinkPaymaster__factory {
   static readonly abi = _abi;
-  static createInterface(): IEtherspotPaymasterInterface {
-    return new utils.Interface(_abi) as IEtherspotPaymasterInterface;
+  static createInterface(): IByzanlinkPaymasterInterface {
+    return new utils.Interface(_abi) as IByzanlinkPaymasterInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IEtherspotPaymaster {
-    return new Contract(address, _abi, signerOrProvider) as IEtherspotPaymaster;
+  ): IByzanlinkPaymaster {
+    return new Contract(address, _abi, signerOrProvider) as IByzanlinkPaymaster;
   }
 }

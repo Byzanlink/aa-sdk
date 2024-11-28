@@ -31,8 +31,8 @@ export interface IByzanlinkWalletFactoryInterface extends utils.Interface {
   functions: {
     "accountCreationCode()": FunctionFragment;
     "checkImplementation(address)": FunctionFragment;
-    "createAccount(address,uint256)": FunctionFragment;
-    "getAddress(address,uint256)": FunctionFragment;
+    "createAccount(address,uint256,bytes32[2])": FunctionFragment;
+    "getAddress(address,uint256,bytes32[2])": FunctionFragment;
   };
 
   getFunction(
@@ -53,11 +53,19 @@ export interface IByzanlinkWalletFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createAccount",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getAddress",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
+    ]
   ): string;
 
   decodeFunctionResult(
@@ -143,12 +151,14 @@ export interface IByzanlinkWalletFactory extends BaseContract {
     createAccount(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     getAddress(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: CallOverrides
     ): Promise<[string] & { proxy: string }>;
   };
@@ -163,12 +173,14 @@ export interface IByzanlinkWalletFactory extends BaseContract {
   createAccount(
     _owner: PromiseOrValue<string>,
     _index: PromiseOrValue<BigNumberish>,
+    publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   getAddress(
     _owner: PromiseOrValue<string>,
     _index: PromiseOrValue<BigNumberish>,
+    publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -183,12 +195,14 @@ export interface IByzanlinkWalletFactory extends BaseContract {
     createAccount(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: CallOverrides
     ): Promise<string>;
 
     getAddress(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -222,12 +236,14 @@ export interface IByzanlinkWalletFactory extends BaseContract {
     createAccount(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     getAddress(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -245,12 +261,14 @@ export interface IByzanlinkWalletFactory extends BaseContract {
     createAccount(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     getAddress(
       _owner: PromiseOrValue<string>,
       _index: PromiseOrValue<BigNumberish>,
+      publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

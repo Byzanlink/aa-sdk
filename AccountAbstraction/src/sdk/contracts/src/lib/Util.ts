@@ -20,32 +20,29 @@ import type {
   PromiseOrValue,
 } from "../../../common";
 
-export interface IERC1271WalletInterface extends utils.Interface {
+export interface UtilInterface extends utils.Interface {
   functions: {
-    "isValidSignature(bytes32,bytes)": FunctionFragment;
+    "toHex(bytes32)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "isValidSignature"): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "toHex"): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "isValidSignature",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
+    functionFragment: "toHex",
+    values: [PromiseOrValue<BytesLike>]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "isValidSignature",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "toHex", data: BytesLike): Result;
 
   events: {};
 }
 
-export interface IERC1271Wallet extends BaseContract {
+export interface Util extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IERC1271WalletInterface;
+  interface: UtilInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -67,23 +64,20 @@ export interface IERC1271Wallet extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    isValidSignature(
-      hash: PromiseOrValue<BytesLike>,
-      signature: PromiseOrValue<BytesLike>,
+    toHex(
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[string] & { magicValue: string }>;
+    ): Promise<[string]>;
   };
 
-  isValidSignature(
-    hash: PromiseOrValue<BytesLike>,
-    signature: PromiseOrValue<BytesLike>,
+  toHex(
+    data: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   callStatic: {
-    isValidSignature(
-      hash: PromiseOrValue<BytesLike>,
-      signature: PromiseOrValue<BytesLike>,
+    toHex(
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -91,17 +85,15 @@ export interface IERC1271Wallet extends BaseContract {
   filters: {};
 
   estimateGas: {
-    isValidSignature(
-      hash: PromiseOrValue<BytesLike>,
-      signature: PromiseOrValue<BytesLike>,
+    toHex(
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    isValidSignature(
-      hash: PromiseOrValue<BytesLike>,
-      signature: PromiseOrValue<BytesLike>,
+    toHex(
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

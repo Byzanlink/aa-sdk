@@ -2,6 +2,7 @@ import { BytesLike, TypedDataField, Wallet } from 'ethers';
 import type UniversalProvider from '@walletconnect/universal-provider';
 import { UniqueSubject } from '../../common';
 import { NetworkNames } from '../../network';
+import { Hex } from 'viem';
 
 export interface WalletProvider {
   readonly type?: string;
@@ -10,8 +11,9 @@ export interface WalletProvider {
   readonly address$?: UniqueSubject<string>;
   readonly networkName?: NetworkNames;
   readonly networkName$?: UniqueSubject<NetworkNames>;
-
-  signMessage(message: BytesLike): Promise<string>;
+  readonly pubKey:[Hex,Hex];
+  readonly pubKey$?: UniqueSubject<[Hex,Hex]>;
+  signMessage(message: BytesLike, precompileDeployed?: boolean): Promise<string>;
   signTypedData(typedData: TypedDataField[], message: any, accountAddress: string): Promise<string>;
 }
 

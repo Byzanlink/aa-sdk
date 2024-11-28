@@ -92,6 +92,11 @@ const _abi = [
         name: "_index",
         type: "uint256",
       },
+      {
+        internalType: "bytes32[2]",
+        name: "publicKey",
+        type: "bytes32[2]",
+      },
     ],
     name: "createAccount",
     outputs: [
@@ -115,6 +120,11 @@ const _abi = [
         internalType: "uint256",
         name: "_index",
         type: "uint256",
+      },
+      {
+        internalType: "bytes32[2]",
+        name: "publicKey",
+        type: "bytes32[2]",
       },
     ],
     name: "getAddress",

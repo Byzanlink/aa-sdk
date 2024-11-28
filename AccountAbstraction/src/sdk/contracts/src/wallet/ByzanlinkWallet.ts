@@ -80,7 +80,7 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
     "guardianCosign()": FunctionFragment;
     "guardianCount()": FunctionFragment;
     "guardianPropose(address)": FunctionFragment;
-    "initialize(address)": FunctionFragment;
+    "initialize(address,bytes32[2])": FunctionFragment;
     "isGuardian(address)": FunctionFragment;
     "isOwner(address)": FunctionFragment;
     "isValidSignature(bytes32,bytes)": FunctionFragment;
@@ -91,10 +91,12 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
     "proposalId()": FunctionFragment;
     "proposalTimelock()": FunctionFragment;
     "proxiableUUID()": FunctionFragment;
+    "publicKey()": FunctionFragment;
     "removeGuardian(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "upgradeToAndCall(address,bytes)": FunctionFragment;
+    "validateP256Signature(bytes,bytes32)": FunctionFragment;
     "validateUserOp((address,uint256,bytes,bytes,bytes32,uint256,bytes32,bytes,bytes),bytes32,uint256)": FunctionFragment;
     "withdrawDepositTo(address,uint256)": FunctionFragment;
   };
@@ -128,10 +130,12 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
       | "proposalId"
       | "proposalTimelock"
       | "proxiableUUID"
+      | "publicKey"
       | "removeGuardian"
       | "removeOwner"
       | "supportsInterface"
       | "upgradeToAndCall"
+      | "validateP256Signature"
       | "validateUserOp"
       | "withdrawDepositTo"
   ): FunctionFragment;
@@ -207,7 +211,10 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "isGuardian",
@@ -266,6 +273,7 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
     functionFragment: "proxiableUUID",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "publicKey", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeGuardian",
     values: [PromiseOrValue<string>]
@@ -281,6 +289,10 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "upgradeToAndCall",
     values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "validateP256Signature",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "validateUserOp",
@@ -370,6 +382,7 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
     functionFragment: "proxiableUUID",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "publicKey", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeGuardian",
     data: BytesLike
@@ -384,6 +397,10 @@ export interface ByzanlinkWalletInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "upgradeToAndCall",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "validateP256Signature",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -654,6 +671,7 @@ export interface ByzanlinkWallet extends BaseContract {
 
     initialize(
       anOwner: PromiseOrValue<string>,
+      _publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -707,6 +725,10 @@ export interface ByzanlinkWallet extends BaseContract {
 
     proxiableUUID(overrides?: CallOverrides): Promise<[string]>;
 
+    publicKey(
+      overrides?: CallOverrides
+    ): Promise<[string, string] & { X: string; Y: string }>;
+
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -727,6 +749,12 @@ export interface ByzanlinkWallet extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    validateP256Signature(
+      _signature: PromiseOrValue<BytesLike>,
+      userOpHash: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     validateUserOp(
       userOp: PackedUserOperationStruct,
@@ -827,6 +855,7 @@ export interface ByzanlinkWallet extends BaseContract {
 
   initialize(
     anOwner: PromiseOrValue<string>,
+    _publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -880,6 +909,10 @@ export interface ByzanlinkWallet extends BaseContract {
 
   proxiableUUID(overrides?: CallOverrides): Promise<string>;
 
+  publicKey(
+    overrides?: CallOverrides
+  ): Promise<[string, string] & { X: string; Y: string }>;
+
   removeGuardian(
     _guardian: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -900,6 +933,12 @@ export interface ByzanlinkWallet extends BaseContract {
     data: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  validateP256Signature(
+    _signature: PromiseOrValue<BytesLike>,
+    userOpHash: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   validateUserOp(
     userOp: PackedUserOperationStruct,
@@ -994,6 +1033,7 @@ export interface ByzanlinkWallet extends BaseContract {
 
     initialize(
       anOwner: PromiseOrValue<string>,
+      _publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1047,6 +1087,10 @@ export interface ByzanlinkWallet extends BaseContract {
 
     proxiableUUID(overrides?: CallOverrides): Promise<string>;
 
+    publicKey(
+      overrides?: CallOverrides
+    ): Promise<[string, string] & { X: string; Y: string }>;
+
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1067,6 +1111,12 @@ export interface ByzanlinkWallet extends BaseContract {
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    validateP256Signature(
+      _signature: PromiseOrValue<BytesLike>,
+      userOpHash: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     validateUserOp(
       userOp: PackedUserOperationStruct,
@@ -1230,6 +1280,7 @@ export interface ByzanlinkWallet extends BaseContract {
 
     initialize(
       anOwner: PromiseOrValue<string>,
+      _publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1283,6 +1334,8 @@ export interface ByzanlinkWallet extends BaseContract {
 
     proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
 
+    publicKey(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1302,6 +1355,12 @@ export interface ByzanlinkWallet extends BaseContract {
       newImplementation: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    validateP256Signature(
+      _signature: PromiseOrValue<BytesLike>,
+      userOpHash: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     validateUserOp(
@@ -1386,6 +1445,7 @@ export interface ByzanlinkWallet extends BaseContract {
 
     initialize(
       anOwner: PromiseOrValue<string>,
+      _publicKey: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1439,6 +1499,8 @@ export interface ByzanlinkWallet extends BaseContract {
 
     proxiableUUID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    publicKey(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     removeGuardian(
       _guardian: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1458,6 +1520,12 @@ export interface ByzanlinkWallet extends BaseContract {
       newImplementation: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    validateP256Signature(
+      _signature: PromiseOrValue<BytesLike>,
+      userOpHash: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     validateUserOp(

@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as access from "./access";
-export * as helpers from "./helpers";
 export * as interfaces from "./interfaces";
+export * as lib from "./lib";
 export * as paymaster from "./paymaster";
 export * as wallet from "./wallet";

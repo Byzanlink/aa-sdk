@@ -81,10 +81,11 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
       this.factory.interface.encodeFunctionData('createAccount', [
         this.services.walletService.EOAAddress,
         this.index,
+        this.services.walletService.pubKey
       ]),
     ]);
   }
-  
+
   async getCounterFactualAddress(): Promise<string> {
     if (this.predefinedAccountAddress) {
       await this.checkAccountAddress(this.predefinedAccountAddress);
@@ -96,6 +97,7 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
       this.accountAddress = await this.factory.getAddress(
         this.services.walletService.EOAAddress,
         this.index,
+        this.services.walletService.pubKey
       );
     }
     return this.accountAddress;
@@ -124,7 +126,15 @@ export class ByzanlinkWalletAPI extends BaseAccountAPI {
   }
 
   async signUserOpHash(userOpHash: string): Promise<string> {
-    const signature = await this.services.walletService.signMessage(arrayify(userOpHash));
+
+    let precompiledP256Deployed = await this.provider.getCode('0x0000000000000000000000000000000000000100') === '0x';
+    if (precompiledP256Deployed) {
+      console.log('P256 precompile not deployed at 0x0000000000000000000000000000000000000100');
+    }
+    else {
+      console.log('P256 precompile deployed at 0x0000000000000000000000000000000000000100');
+    }
+    const signature = await this.services.walletService.signMessage(arrayify(userOpHash),!precompiledP256Deployed);
     return signature;
   }
 

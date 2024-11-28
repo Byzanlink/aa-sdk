@@ -2,8 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IAccessController } from "./IAccessController";
-export type { IERC1271Wallet } from "./IERC1271Wallet";
-export type { IEtherspotPaymaster } from "./IEtherspotPaymaster";
+export type { IByzanlinkPaymaster } from "./IByzanlinkPaymaster";
 export type { IByzanlinkWallet } from "./IByzanlinkWallet";
 export type { IByzanlinkWalletFactory } from "./IByzanlinkWalletFactory";
+export type { IERC1271Wallet } from "./IERC1271Wallet";
 export type { IWhitelist } from "./IWhitelist";

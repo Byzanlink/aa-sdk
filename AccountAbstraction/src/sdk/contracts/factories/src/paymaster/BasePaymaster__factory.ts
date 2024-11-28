@@ -11,6 +11,28 @@ import type {
 
 const _abi = [
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -98,6 +120,11 @@ const _abi = [
         name: "actualGasCost",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "actualUserOpFeePerGas",
+        type: "uint256",
+      },
     ],
     name: "postOp",
     outputs: [],
@@ -156,14 +183,9 @@ const _abi = [
             type: "bytes",
           },
           {
-            internalType: "uint256",
-            name: "callGasLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "verificationGasLimit",
-            type: "uint256",
+            internalType: "bytes32",
+            name: "accountGasLimits",
+            type: "bytes32",
           },
           {
             internalType: "uint256",
@@ -171,14 +193,9 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "uint256",
-            name: "maxFeePerGas",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxPriorityFeePerGas",
-            type: "uint256",
+            internalType: "bytes32",
+            name: "gasFees",
+            type: "bytes32",
           },
           {
             internalType: "bytes",
@@ -191,7 +208,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct UserOperation",
+        internalType: "struct PackedUserOperation",
         name: "userOp",
         type: "tuple",
       },

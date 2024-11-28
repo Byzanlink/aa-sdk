@@ -4,12 +4,14 @@ import { BytesLike, ethers, providers, Wallet as EtherWallet, TypedDataField } f
 import { Service, ObjectSubject } from '../common';
 import { WalletProvider, WalletProviderLike, KeyWalletProvider, WalletLike } from './providers';
 import { Wallet, WalletOptions } from './interfaces';
+import { Hex } from "viem";
 
 export class WalletService extends Service {
   readonly wallet$ = new ObjectSubject<Wallet>();
   readonly EOAAddress$: Observable<string>;
   readonly rpcBundlerUrl: string;
   readonly chainId: number;
+  readonly pubKey$: Observable<[Hex,Hex]>
 
   provider: WalletProvider;
 
@@ -18,6 +20,7 @@ export class WalletService extends Service {
     this.rpcBundlerUrl = rpcUrl;
     this.chainId = chain;
     this.EOAAddress$ = this.wallet$.observeKey('address');
+    this.pubKey$ = this.wallet$.observeKey('pubKey');
   }
 
   get wallet(): Wallet {
@@ -32,6 +35,9 @@ export class WalletService extends Service {
     return this.wallet ? this.wallet.address : null;
   }
 
+  get pubKey(): [Hex,Hex]{
+    return this.wallet? this.wallet.pubKey:null;
+  }
   get walletProvider(): WalletProvider {
     return this.provider ? this.provider : null;
   }
@@ -41,8 +47,8 @@ export class WalletService extends Service {
     return new ethers.providers.JsonRpcProvider(this.rpcBundlerUrl)
   }
 
-  async signMessage(message: BytesLike): Promise<string> {
-    return this.provider ? this.provider.signMessage(message) : null;
+  async signMessage(message: BytesLike, precompileDeployed?: boolean): Promise<string> {
+    return this.provider ? this.provider.signMessage(message,precompileDeployed) : null;
   }
 
   async signTypedData(types: TypedDataField[], message: any, accountAddress: string): Promise<string> {
@@ -81,6 +87,7 @@ export class WalletService extends Service {
 
       const subscriptions: Subscription[] = [];
       const { address, address$ } = provider;
+      const { pubKey } = provider;
 
       if (typeof address$ !== 'undefined') {
         subscriptions.push(
@@ -89,6 +96,7 @@ export class WalletService extends Service {
               map((address) => ({
                 address,
                 providerType,
+                pubKey
               })),
             )
             .subscribe((wallet) => this.wallet$.next(wallet)),
@@ -97,6 +105,7 @@ export class WalletService extends Service {
         this.wallet$.next({
           address,
           providerType,
+          pubKey:pubKey
         });
       } else {
         throw new Error('Invalid wallet address');

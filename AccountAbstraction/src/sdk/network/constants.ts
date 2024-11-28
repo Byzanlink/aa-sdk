@@ -89,7 +89,7 @@ export const Networks: {
     contracts: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
-        byzanlink: '0x2639F0635e9938778d56567152006fBC3252DE5e'
+        byzanlink: '0xdb5cC473bbc77eFC43a004B5bb341CA47dBb7d0d'
       }
     },
   },
@@ -101,7 +101,8 @@ export const Networks: {
       entryPoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
       walletFactory: {
        // byzanlink: '0xBAf0d462bc4E6fb4e092e5a19DEc471c7B394fB6'
-      byzanlink: '0x2639F0635e9938778d56567152006fBC3252DE5e' 
+     // byzanlink: '0xAF0A611edb0eb41b0177FA2eDdd670e2a84fECa8' 
+     byzanlink: '0xdb5cC473bbc77eFC43a004B5bb341CA47dBb7d0d'
       }
     }
   }
